@@ -61,7 +61,7 @@ export function AddRecipeForm() {
   }
 
   return (
-    <form className="form-grid two-column-form" onSubmit={handleSubmit}>
+    <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_select]:min-h-[46px] [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-stone-200 [&_select]:bg-stone-100 [&_select]:px-3 [&_select]:py-2.5 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_select]:dark:border-neutral-700 [&_select]:dark:bg-neutral-800 [&_select]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
       <label>
         Recipe Name
         <input name="recipeName" type="text" placeholder="Recipe name" required />
@@ -95,21 +95,21 @@ export function AddRecipeForm() {
         Preparation Time
         <input name="preparationTime" type="text" placeholder="35 min" required />
       </label>
-      <label className="span-2">
+      <label className="col-span-full max-[660px]:col-span-1">
         Ingredients
         <textarea name="ingredients" placeholder="One ingredient per line" rows={4} />
       </label>
-      <label className="span-2">
+      <label className="col-span-full max-[660px]:col-span-1">
         Instructions
         <textarea name="instructions" placeholder="Detailed cooking steps" rows={6} required />
       </label>
-      <button className="button button-primary" type="submit" disabled={pending}>
+      <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300" type="submit" disabled={pending}>
         {pending ? "Publishing..." : "Publish Recipe"}
       </button>
-      <Link className="button button-secondary" href="/premium">
+      <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-white text-stone-800 hover:bg-stone-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800" href="/premium">
         Become Premium
       </Link>
-      {message ? <p className="toast-message span-2">{message}</p> : null}
+      {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300 col-span-full max-[660px]:col-span-1">{message}</p> : null}
     </form>
   );
 }

@@ -9,9 +9,8 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 - Better Auth with MongoDB
 - Express API with JWT bearer verification
 - HeroUI, Gravity UI icons, and React Hot Toast
-- Tailwind CSS 4 entrypoint with custom global design tokens
+- Tailwind CSS 4 utility classes for all application styling
 - Framer Motion
-- Lucide React icons
 
 ## Environment
 

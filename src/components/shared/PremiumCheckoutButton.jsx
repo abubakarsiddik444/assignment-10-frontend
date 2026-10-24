@@ -29,7 +29,7 @@ export function PremiumCheckoutButton() {
   return (
     <>
       <Button
-        className="button button-primary"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
         isDisabled={pending}
         type="button"
         variant="solid"
@@ -37,7 +37,7 @@ export function PremiumCheckoutButton() {
       >
         <ShoppingCart width={18} height={18} /> {pending ? "Opening Stripe..." : "Checkout with Stripe"}
       </Button>
-      {message ? <p className="toast-message">{message}</p> : null}
+      {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300">{message}</p> : null}
     </>
   );
 }

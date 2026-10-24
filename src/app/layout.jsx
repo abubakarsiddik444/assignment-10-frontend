@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body>
+      <body className="min-h-screen bg-stone-50 font-[var(--font-geist-sans)] text-stone-900 dark:bg-neutral-950 dark:text-stone-100">
         <UiProviders>
           <ThemeProvider>
             <SiteShell>{children}</SiteShell>

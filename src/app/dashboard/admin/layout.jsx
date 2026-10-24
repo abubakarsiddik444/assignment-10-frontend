@@ -10,9 +10,9 @@ const items = [
 
 export default function AdminLayout({ children }) {
   return (
-    <div className="dashboard-layout">
+    <div className="grid grid-cols-[280px_minmax(0,1fr)] items-start gap-6 max-[980px]:grid-cols-1">
       <DashboardNav items={items} />
-      <div className="dashboard-content">{children}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }

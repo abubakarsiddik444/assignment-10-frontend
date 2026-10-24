@@ -13,24 +13,24 @@ export default async function Home() {
 
   return (
     <>
-      <section className="hero">
-        <div className="hero-copy">
-          <span className="eyebrow">Recipe sharing platform</span>
+      <section className="mx-auto mt-6 grid min-h-[calc(100vh-7.5rem)] w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[minmax(0,.9fr)_minmax(360px,1.1fr)] items-stretch gap-7 pb-9 max-[980px]:min-h-0 max-[980px]:grid-cols-1 max-[660px]:w-[calc(100%-1.25rem)]">
+        <div className="flex flex-col justify-center rounded-2xl border border-stone-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-14 [&_h1]:m-0 [&_h1]:text-[clamp(2.3rem,7vw,5.8rem)] [&_h1]:leading-[.96] [&_p]:my-6 [&_p]:max-w-[58ch] [&_p]:text-lg [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
+          <span className="mb-3 inline-block text-xs font-extrabold uppercase tracking-[.12em] text-orange-700 dark:text-orange-300">Recipe sharing platform</span>
           <h1>RecipeHub</h1>
           <p>
             Create, share, discover, save, report, and purchase recipes from a
             polished community kitchen built for food lovers and creators.
           </p>
-          <div className="hero-actions">
-            <Link className="button button-primary" href="/browse-recipes">
+          <div className="flex flex-wrap items-center gap-3 max-[660px]:[&>a]:w-full">
+            <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300" href="/browse-recipes">
               Browse Recipes <ArrowRight size={18} />
             </Link>
-            <Link className="button button-ghost" href="/dashboard/add-recipe">
+            <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-stone-100 text-stone-800 hover:bg-stone-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-100 dark:hover:bg-neutral-700" href="/dashboard/add-recipe">
               Add Recipe
             </Link>
           </div>
         </div>
-        <div className="hero-media">
+        <div className="min-h-[520px] overflow-hidden rounded-2xl shadow-xl max-[980px]:min-h-[360px] max-[660px]:min-h-[280px] [&_img]:h-full [&_img]:w-full [&_img]:object-cover">
           <Image
             src="https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=1400&q=80"
             alt="A table filled with colorful dishes"
@@ -42,26 +42,26 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-heading">
-          <span className="eyebrow">Featured by admin</span>
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1180px] py-[4.5rem] max-[660px]:w-[calc(100%-1.25rem)]">
+        <div className="mb-7 max-w-[720px] [&_h2]:m-0 [&_h2]:text-[clamp(1.9rem,4vw,3.4rem)] [&_h2]:tracking-tight">
+          <span className="mb-3 inline-block text-xs font-extrabold uppercase tracking-[.12em] text-orange-700 dark:text-orange-300">Featured by admin</span>
           <h2>Featured Recipes</h2>
         </div>
-        <div className="recipe-grid">
+        <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[660px]:grid-cols-1">
           {featuredRecipes.map((recipe) => (
             <RecipeCard key={recipe.id || recipe._id} recipe={recipe} />
           ))}
         </div>
       </section>
 
-      <section className="section split-section">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1180px] py-[4.5rem] max-[660px]:w-[calc(100%-1.25rem)] grid grid-cols-[.8fr_1.2fr] items-start gap-8 max-[980px]:grid-cols-1 [&_h2]:text-[clamp(1.9rem,4vw,3.4rem)]">
         <div>
-          <span className="eyebrow">Most liked</span>
+          <span className="mb-3 inline-block text-xs font-extrabold uppercase tracking-[.12em] text-orange-700 dark:text-orange-300">Most liked</span>
           <h2>Popular Recipes</h2>
         </div>
-        <div className="popular-list">
+        <div className="grid gap-3">
           {popularRecipes.map((recipe, index) => (
-            <article className="popular-item" key={recipe.id || recipe._id}>
+            <article className="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl border border-stone-200 bg-white p-[18px] dark:border-neutral-800 dark:bg-neutral-900 [&_h3]:m-0 [&_h3]:font-bold [&_p]:m-0 [&_p]:text-stone-500 dark:[&_p]:text-stone-400 [&>span]:text-2xl [&>span]:font-extrabold [&>span]:text-amber-600" key={recipe.id || recipe._id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>{recipe.recipeName}</h3>
@@ -77,8 +77,8 @@ export default async function Home() {
 
       <MotionFeature />
 
-      <section className="section creator-band">
-        <div className="creator-card">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1180px] py-[4.5rem] max-[660px]:w-[calc(100%-1.25rem)] grid grid-cols-2 gap-[18px] max-[980px]:grid-cols-1">
+        <div className="min-h-[230px] rounded-2xl border border-stone-200 bg-gradient-to-br from-white to-stone-100 p-[22px] shadow-md dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-800 [&_h2]:mt-[18px] [&_h2]:text-2xl [&_h2]:font-bold [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
           <FileArrowUp size={28} />
           <h2>Publish from any kitchen</h2>
           <p>
@@ -86,7 +86,7 @@ export default async function Home() {
             and preparation time with a form ready for imgbb integration.
           </p>
         </div>
-        <div className="creator-card">
+        <div className="min-h-[230px] rounded-2xl border border-stone-200 bg-gradient-to-br from-white to-stone-100 p-[22px] shadow-md dark:border-neutral-800 dark:from-neutral-900 dark:to-neutral-800 [&_h2]:mt-[18px] [&_h2]:text-2xl [&_h2]:font-bold [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
           <ShieldCheck size={28} />
           <h2>Admin moderation built in</h2>
           <p>
