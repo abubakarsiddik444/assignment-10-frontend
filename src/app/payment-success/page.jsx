@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck } from "@gravity-ui/icons";
 import { PaymentConfirmer } from "@/components/shared/PaymentConfirmer";
 
 export const metadata = {

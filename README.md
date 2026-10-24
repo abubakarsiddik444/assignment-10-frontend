@@ -38,6 +38,9 @@ frontend.
 MongoDB, Better Auth, JWT, and Google OAuth credentials are server-side values:
 do not give them a `NEXT_PUBLIC_` prefix. Keep Stripe's secret key only in the
 backend `.env`, never in the frontend.
+Use the MongoDB Atlas **database user** credentials in `MONGODB_URI` (not the
+Atlas website login), allow the development machine's IP in Atlas Network
+Access, and percent-encode any reserved characters in the database password.
 
 ## Routes
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck } from "lucide-react";
+import { SealCheck } from "@gravity-ui/icons";
 import { currentUser } from "@/lib/data";
 
 export const metadata = {
@@ -17,7 +17,7 @@ export default function ProfilePage() {
           <p>{currentUser.email}</p>
           {currentUser.isPremium ? (
             <span className="premium-badge">
-              <BadgeCheck size={16} /> Premium member
+              <SealCheck size={16} /> Premium member
             </span>
           ) : null}
         </div>

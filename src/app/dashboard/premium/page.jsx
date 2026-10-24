@@ -1,4 +1,4 @@
-import { BadgeCheck, Infinity, Sparkles } from "lucide-react";
+import { Check, SealCheck, Sparkles } from "@gravity-ui/icons";
 import { PremiumCheckoutButton } from "@/components/shared/PremiumCheckoutButton";
 
 export const metadata = {
@@ -19,10 +19,10 @@ export default function PremiumPage() {
         <p className="price">$19.99</p>
         <ul className="check-list">
           <li>
-            <Infinity size={17} /> Unlimited Add Recipe access
+            <Check size={17} /> Unlimited Add Recipe access
           </li>
           <li>
-            <BadgeCheck size={17} /> Premium profile badge
+            <SealCheck size={17} /> Premium profile badge
           </li>
           <li>Saved transaction in payments collection</li>
         </ul>

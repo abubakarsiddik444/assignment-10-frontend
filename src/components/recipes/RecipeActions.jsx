@@ -1,7 +1,7 @@
 "use client";
 
 import { CreditCard, Flag, Heart, Star } from "@gravity-ui/icons";
-import { X } from "lucide-react";
+import { Xmark } from "@gravity-ui/icons";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
@@ -84,7 +84,7 @@ export function RecipeActions({ recipe }) {
               onClick={() => setShowReport(false)}
               aria-label="Close report modal"
             >
-              <X size={18} />
+              <Xmark size={18} />
             </button>
             <h2 id="report-title">Report recipe</h2>
             <p>Select a reason so admins can review this recipe.</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Magnifier } from "@gravity-ui/icons";
 import { useMemo, useState } from "react";
 import { RecipeCard } from "./RecipeCard";
 
@@ -29,7 +29,7 @@ export function RecipeFilters({ recipes, categories }) {
           Search
         </label>
         <div className="search-field">
-          <Search size={18} />
+          <Magnifier size={18} />
           <input
             id="recipe-search"
             value={query}

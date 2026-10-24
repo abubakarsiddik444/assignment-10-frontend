@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ChefHat } from "lucide-react";
+import { Cup } from "@gravity-ui/icons";
 
 export default function NotFound() {
   return (
     <section className="status-page">
       <div className="not-found-illustration">
-        <ChefHat size={72} />
+        <Cup size={72} />
         <span>404</span>
       </div>
       <h1>Recipe not found</h1>

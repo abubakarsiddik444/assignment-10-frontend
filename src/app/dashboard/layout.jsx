@@ -1,4 +1,7 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { DashboardNav } from "@/components/layout/DashboardNav";
+import { auth } from "@/lib/auth";
 
 const items = [
   { href: "/dashboard", label: "Overview" },
@@ -9,7 +12,12 @@ const items = [
   { href: "/dashboard/profile", label: "Profile" },
 ];
 
-export default function DashboardLayout({ children }) {
+export default async function DashboardLayout({ children }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    redirect("/login?next=%2Fdashboard");
+  }
+
   return (
     <div className="dashboard-layout">
       <DashboardNav items={items} />

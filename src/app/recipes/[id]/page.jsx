@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Clock, Gauge, Soup } from "lucide-react";
+import { Clock, Cup, Speedometer } from "@gravity-ui/icons";
 import { RecipeActions } from "@/components/recipes/RecipeActions";
 import { getRecipe } from "@/lib/api";
 import { getRecipeById, recipes } from "@/lib/data";
@@ -48,10 +48,10 @@ export default async function RecipeDetailsPage({ params }) {
               <Clock size={18} /> {recipe.preparationTime}
             </span>
             <span>
-              <Gauge size={18} /> {recipe.difficultyLevel}
+              <Speedometer size={18} /> {recipe.difficultyLevel}
             </span>
             <span>
-              <Soup size={18} /> {recipe.likesCount} likes
+              <Cup size={18} /> {recipe.likesCount} likes
             </span>
           </div>
           <RecipeActions recipe={recipe} />

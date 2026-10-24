@@ -8,6 +8,9 @@ export const auth = betterAuth({
   database: mongodbAdapter(authDatabase),
   trustedOrigins: [
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    ...(process.env.NODE_ENV === "development"
+      ? ["http://127.0.0.1:3000", "http://localhost:3000"]
+      : []),
   ],
   emailAndPassword: {
     enabled: true,

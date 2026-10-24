@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Heart, Star } from "lucide-react";
+import { Clock, Heart, Star } from "@gravity-ui/icons";
 
 export function RecipeCard({ recipe, variant = "default" }) {
   const recipeId = recipe.id || recipe._id;

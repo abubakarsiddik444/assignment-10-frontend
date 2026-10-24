@@ -1,7 +1,13 @@
 "use client";
 
 import { Button } from "@heroui/react";
-import { Globe, Image as ImageIcon, Lock, Mail, User } from "lucide-react";
+import {
+  Camera,
+  Envelope,
+  Globe,
+  Lock,
+  Person,
+} from "@gravity-ui/icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
@@ -40,7 +46,16 @@ export function AuthForm({ mode }) {
           });
 
       if (result.error) {
-        throw new Error(result.error.message || "Authentication failed.");
+        const status = Number(result.error.status || result.error.statusCode);
+        const serviceError =
+          Number.isFinite(status) && status >= 500;
+        throw new Error(
+          result.error.message ||
+            result.error.statusText ||
+            (serviceError
+              ? "Authentication service is unavailable. Check the MongoDB connection string and database-user credentials."
+              : `${isRegister ? "Registration" : "Login"} failed (${result.error.code || result.error.status || "unknown error"}).`),
+        );
       }
 
       let destination = getRedirectPath();
@@ -88,7 +103,7 @@ export function AuthForm({ mode }) {
         <label>
           Name
           <span className="input-icon">
-            <User size={18} />
+            <Person size={18} />
             <input name="name" type="text" placeholder="Your name" required />
           </span>
         </label>
@@ -96,7 +111,7 @@ export function AuthForm({ mode }) {
       <label>
         Email
         <span className="input-icon">
-          <Mail size={18} />
+          <Envelope size={18} />
           <input name="email" type="email" placeholder="you@example.com" required />
         </span>
       </label>
@@ -104,7 +119,7 @@ export function AuthForm({ mode }) {
         <label>
           Image URL
           <span className="input-icon">
-            <ImageIcon size={18} />
+            <Camera size={18} />
             <input name="image" type="url" placeholder="https://..." />
           </span>
         </label>

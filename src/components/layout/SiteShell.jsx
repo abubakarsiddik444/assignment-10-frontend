@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ChefHat, Globe, Mail, MapPin, MessageCircle, Phone, Share2 } from "lucide-react";
+import {
+  Camera,
+  Comment,
+  Cup,
+  Envelope,
+  Globe,
+  MapPin,
+  Smartphone,
+} from "@gravity-ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
@@ -15,7 +23,7 @@ export function SiteShell({ children }) {
       <header className="site-header">
         <Link className="brand" href="/" aria-label="RecipeHub home">
           <span className="brand-mark">
-            <ChefHat size={21} />
+            <Cup size={21} />
           </span>
           <span>RecipeHub</span>
         </Link>
@@ -42,7 +50,7 @@ export function SiteShell({ children }) {
           <div>
             <Link className="brand footer-brand" href="/">
               <span className="brand-mark">
-                <ChefHat size={21} />
+                <Cup size={21} />
               </span>
               <span>RecipeHub</span>
             </Link>
@@ -61,10 +69,10 @@ export function SiteShell({ children }) {
           <div>
             <h3>Contact</h3>
             <p className="footer-line">
-              <Mail size={16} /> hello@recipehub.test
+              <Envelope size={16} /> hello@recipehub.test
             </p>
             <p className="footer-line">
-              <Phone size={16} /> +880 1700 000000
+              <Smartphone size={16} /> +880 1700 000000
             </p>
             <p className="footer-line">
               <MapPin size={16} /> Dhaka, Bangladesh
@@ -77,10 +85,10 @@ export function SiteShell({ children }) {
                 <Globe size={18} />
               </Link>
               <Link href="#" aria-label="Instagram">
-                <Share2 size={18} />
+                <Camera size={18} />
               </Link>
               <Link href="#" aria-label="Twitter">
-                <MessageCircle size={18} />
+                <Comment size={18} />
               </Link>
             </div>
           </div>

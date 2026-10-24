@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Flame, ShieldCheck, UploadCloud } from "lucide-react";
+import { ArrowRight, FileArrowUp, Flame, ShieldCheck } from "@gravity-ui/icons";
 import { MotionFeature } from "@/components/recipes/MotionFeature";
 import { RecipeCard } from "@/components/recipes/RecipeCard";
 import { getRecipes } from "@/lib/api";
@@ -79,7 +79,7 @@ export default async function Home() {
 
       <section className="section creator-band">
         <div className="creator-card">
-          <UploadCloud size={28} />
+          <FileArrowUp size={28} />
           <h2>Publish from any kitchen</h2>
           <p>
             Add images, category, cuisine, difficulty, ingredients, instructions,

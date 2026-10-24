@@ -1,4 +1,4 @@
-import { BadgeCheck, Flag, Soup, Users } from "lucide-react";
+import { Cup, Flag, Persons, SealCheck } from "@gravity-ui/icons";
 import { getDashboardStats } from "@/lib/data";
 
 export const metadata = {
@@ -15,17 +15,17 @@ export default function AdminPage() {
       </div>
       <div className="stat-grid">
         <article className="stat-card">
-          <Users size={22} />
+          <Persons size={22} />
           <span>Total Users</span>
           <strong>{stats.totalUsers}</strong>
         </article>
         <article className="stat-card">
-          <Soup size={22} />
+          <Cup size={22} />
           <span>Total Recipes</span>
           <strong>{stats.totalRecipes}</strong>
         </article>
         <article className="stat-card">
-          <BadgeCheck size={22} />
+          <SealCheck size={22} />
           <span>Premium Members</span>
           <strong>{stats.totalPremiumMembers}</strong>
         </article>

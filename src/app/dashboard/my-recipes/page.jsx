@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, TrashBin } from "@gravity-ui/icons";
 import { recipes } from "@/lib/data";
 
 export const metadata = {
@@ -36,7 +36,7 @@ export default function MyRecipesPage() {
                     <Pencil size={16} />
                   </Link>
                   <button className="icon-button danger-icon" type="button" aria-label="Delete recipe">
-                    <Trash2 size={16} />
+                    <TrashBin size={16} />
                   </button>
                 </td>
               </tr>

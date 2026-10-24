@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "@gravity-ui/icons";
 import { useTheme } from "./ThemeProvider";
 
 export function ThemeToggle() {

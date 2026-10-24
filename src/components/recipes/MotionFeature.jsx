@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Award, Sparkles, Users } from "lucide-react";
+import { Medal, Persons, Sparkles } from "@gravity-ui/icons";
 
 const features = [
   {
@@ -10,12 +10,12 @@ const features = [
     text: "Publish recipes, track likes, and build a personal cookbook profile.",
   },
   {
-    icon: Award,
+    icon: Medal,
     title: "Premium unlocks",
     text: "Members can add unlimited recipes and carry a premium profile badge.",
   },
   {
-    icon: Users,
+    icon: Persons,
     title: "Moderated community",
     text: "Reports, featured recipes, and admin controls keep the platform curated.",
   },

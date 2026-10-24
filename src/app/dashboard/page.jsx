@@ -1,4 +1,4 @@
-import { BadgeCheck, Heart, Soup, TrendingUp } from "lucide-react";
+import { ChartLineArrowUp, Cup, Heart, SealCheck } from "@gravity-ui/icons";
 import { getOverview } from "@/lib/api";
 
 export const metadata = {
@@ -15,7 +15,7 @@ export default async function DashboardPage() {
       </div>
       <div className="stat-grid">
         <article className="stat-card">
-          <Soup size={22} />
+          <Cup size={22} />
           <span>Total Recipes</span>
           <strong>{stats.totalRecipes}</strong>
         </article>
@@ -25,12 +25,12 @@ export default async function DashboardPage() {
           <strong>{stats.totalFavorites}</strong>
         </article>
         <article className="stat-card">
-          <TrendingUp size={22} />
+          <ChartLineArrowUp size={22} />
           <span>Likes Received</span>
           <strong>{stats.totalLikesReceived}</strong>
         </article>
         <article className="stat-card">
-          <BadgeCheck size={22} />
+          <SealCheck size={22} />
           <span>Premium</span>
           <strong>{stats.isPremium ? "Active" : "Locked"}</strong>
         </article>
