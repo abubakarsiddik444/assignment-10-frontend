@@ -37,6 +37,9 @@ frontend.
 MongoDB, Better Auth, JWT, and Google OAuth credentials are server-side values:
 do not give them a `NEXT_PUBLIC_` prefix. Keep Stripe's secret key only in the
 backend `.env`, never in the frontend.
+In particular, use `MONGODB_URI` (not `NEXT_PUBLIC_MONGODB_URI`) in both
+server environments, and `STRIPE_SECRET_KEY` only in the backend. Only the
+Stripe publishable key and imgbb upload key should use `NEXT_PUBLIC_`.
 Use the MongoDB Atlas **database user** credentials in `MONGODB_URI` (not the
 Atlas website login), allow the development machine's IP in Atlas Network
 Access, and percent-encode any reserved characters in the database password.
@@ -45,6 +48,9 @@ server reports `bad auth: Authentication failed`, reset the Atlas Database
 Access user's password, update `MONGODB_URI` in both private environment files,
 and restart both servers. Stripe Checkout additionally needs `STRIPE_SECRET_KEY`
 in the backend environment.
+If a live key or database password is pasted into chat or another shared
+location, rotate it in its provider dashboard and update the private `.env`
+files; do not commit those files.
 
 ## Routes
 
