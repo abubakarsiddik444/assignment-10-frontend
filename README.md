@@ -41,6 +41,11 @@ backend `.env`, never in the frontend.
 Use the MongoDB Atlas **database user** credentials in `MONGODB_URI` (not the
 Atlas website login), allow the development machine's IP in Atlas Network
 Access, and percent-encode any reserved characters in the database password.
+The frontend and backend must use the same working MongoDB URI. If either
+server reports `bad auth: Authentication failed`, reset the Atlas Database
+Access user's password, update `MONGODB_URI` in both private environment files,
+and restart both servers. Stripe Checkout additionally needs `STRIPE_SECRET_KEY`
+in the backend environment.
 
 ## Routes
 

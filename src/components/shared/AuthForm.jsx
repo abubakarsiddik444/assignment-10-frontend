@@ -47,14 +47,13 @@ export function AuthForm({ mode }) {
 
       if (result.error) {
         const status = Number(result.error.status || result.error.statusCode);
-        const serviceError =
-          Number.isFinite(status) && status >= 500;
+        const serviceError = Number.isFinite(status) && status >= 500;
         throw new Error(
-          result.error.message ||
-            result.error.statusText ||
-            (serviceError
-              ? "Authentication service is unavailable. Check the MongoDB connection string and database-user credentials."
-              : `${isRegister ? "Registration" : "Login"} failed (${result.error.code || result.error.status || "unknown error"}).`),
+          serviceError || result.error.code === "INTERNAL_SERVER_ERROR"
+            ? "Authentication could not connect to the database. Check the MongoDB Atlas database-user credentials and Network Access IP allowlist in both .env files."
+            : result.error.message ||
+                result.error.statusText ||
+                `${isRegister ? "Registration" : "Login"} failed (${result.error.code || result.error.status || "unknown error"}).`,
         );
       }
 
