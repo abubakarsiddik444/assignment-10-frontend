@@ -1,33 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RecipeHub Frontend
 
-## Getting Started
+RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers the public recipe discovery flow, user dashboard, admin dashboard, premium membership screen, payment success screen, theme toggle, pagination UI, reporting modal, and Framer Motion animation requirement.
 
-First, run the development server:
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- Tailwind CSS 4 entrypoint with custom global design tokens
+- Framer Motion
+- Lucide React icons
+
+## Environment
+
+Keep frontend and backend environment variables separate. Copy the examples to
+`.env.local` in the frontend and `.env` in the backend. Never put database
+credentials, JWT/Better Auth secrets, Google client secrets, or Stripe secret
+keys in a `NEXT_PUBLIC_*` variable or the frontend environment.
+
+The frontend needs `NEXT_PUBLIC_API_BASE_URL` (for local development:
+`http://localhost:5000`). The backend needs `MONGODB_URI`, a random
+`JWT_SECRET` of at least 32 characters, `CLIENT_ORIGIN`, and `STRIPE_SECRET_KEY`
+to enable checkout. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
+`GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` for the Better Auth/OAuth
+configuration. `NEXT_PUBLIC_IMGBB_API_KEY` is used by the browser image upload.
+Generate both secrets yourself (for example,
+`node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`).
+
+The current frontend `.env` contains server credentials named with the
+`NEXT_PUBLIC_` prefix. Move those values to the backend `.env` using the
+server-only names above, remove their old frontend entries, and rotate any
+secrets that may already have been exposed or committed. Do not send secret
+values in chat.
+
+## Routes
+
+- `/` home with banner, featured recipes, popular recipes, and extra sections
+- `/browse-recipes` recipe cards with search, category filter, and pagination UI
+- `/recipes/[id]` recipe details with like, purchase, report, and favorite actions
+- `/login` and `/register`
+- `/dashboard` user overview
+- `/dashboard/add-recipe`
+- `/dashboard/my-recipes`
+- `/dashboard/favorites`
+- `/dashboard/purchased`
+- `/dashboard/profile`
+- `/premium`
+- `/payment-success`
+- `/dashboard/admin`
+- `/dashboard/admin/users`
+- `/dashboard/admin/recipes`
+- `/dashboard/admin/reports`
+- `/dashboard/admin/transactions`
+
+## Run Locally
+
+Start the Express API from `C:\projects\Assignment\assignment-10-backend`
+after creating its `.env` from `.env.example`:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then start the frontend from this directory after creating `.env.local` from
+`.env.example` and setting `BETTER_AUTH_SECRET`:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
-## Learn More
+## Verification
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run lint and build from the frontend directory. The production build requires a
+`BETTER_AUTH_SECRET` to be set in the environment.
 
 ## Deploy on Vercel
 
