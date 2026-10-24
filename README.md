@@ -48,6 +48,7 @@ server reports `bad auth: Authentication failed`, reset the Atlas Database
 Access user's password, update `MONGODB_URI` in both private environment files,
 and restart both servers. Stripe Checkout additionally needs `STRIPE_SECRET_KEY`
 in the backend environment.
+Both environment examples use the `assignment-10` database by default.
 If a live key or database password is pasted into chat or another shared
 location, rotate it in its provider dashboard and update the private `.env`
 files; do not commit those files.
