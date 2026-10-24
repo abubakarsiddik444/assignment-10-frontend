@@ -4,6 +4,7 @@ import { CreditCard, Flag, Heart, Star } from "@gravity-ui/icons";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function RecipeActions({ recipe }) {
   const [likes, setLikes] = useState(recipe.likesCount);
@@ -26,6 +27,7 @@ export function RecipeActions({ recipe }) {
               if (data.recipe?.likesCount) setLikes(data.recipe.likesCount);
             } catch (error) {
               setMessage(error.message);
+              toast.error(error.message);
             }
           }}
         >
@@ -41,8 +43,10 @@ export function RecipeActions({ recipe }) {
               });
               setFavorite(data.favorited);
               setMessage(data.favorited ? "Added to favorites." : "Removed from favorites.");
+              toast.success(data.favorited ? "Added to favorites." : "Removed from favorites.");
             } catch (error) {
               setMessage(error.message);
+              toast.error(error.message);
             }
           }}
         >
@@ -60,6 +64,7 @@ export function RecipeActions({ recipe }) {
               window.location.href = data.url;
             } catch (error) {
               setMessage(error.message);
+              toast.error(error.message);
             }
           }}
         >
@@ -96,9 +101,11 @@ export function RecipeActions({ recipe }) {
                         body: JSON.stringify({ reason }),
                       });
                       setMessage(`Report submitted: ${reason}.`);
+                      toast.success("Report submitted for review.");
                       setShowReport(false);
                     } catch (error) {
                       setMessage(error.message);
+                      toast.error(error.message);
                     }
                   }}
                 >

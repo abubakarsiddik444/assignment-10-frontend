@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function PaymentConfirmer() {
   const searchParams = useSearchParams();
@@ -18,8 +19,14 @@ export function PaymentConfirmer() {
       method: "POST",
       body: JSON.stringify({ sessionId }),
     })
-      .then(() => setMessage("Payment saved and premium status updated."))
-      .catch((error) => setMessage(error.message));
+      .then(() => {
+        setMessage("Payment saved and premium status updated.");
+        toast.success("Payment confirmed.");
+      })
+      .catch((error) => {
+        setMessage(error.message);
+        toast.error(error.message);
+      });
   }, [sessionId]);
 
   return <p>{message}</p>;

@@ -5,33 +5,79 @@ import { Globe, Image as ImageIcon, Lock, Mail, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export function AuthForm({ mode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const isRegister = mode === "register";
+
+  function getRedirectPath() {
+    const nextPath = searchParams.get("next");
+    return nextPath?.startsWith("/") && !nextPath.startsWith("//")
+      ? nextPath
+      : "/dashboard";
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
     setPending(true);
-    setMessage("");
     const formData = new FormData(event.currentTarget);
     const payload = Object.fromEntries(formData.entries());
     try {
-      const { user } = await apiFetch(`/api/auth/${isRegister ? "register" : "login"}`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-      router.push(
-        searchParams.get("next") ||
-          (user?.role === "admin" ? "/dashboard/admin" : "/dashboard"),
-      );
+      const result = isRegister
+        ? await authClient.signUp.email({
+            name: payload.name,
+            email: payload.email,
+            password: payload.password,
+            image: payload.image || undefined,
+          })
+        : await authClient.signIn.email({
+            email: payload.email,
+            password: payload.password,
+          });
+
+      if (result.error) {
+        throw new Error(result.error.message || "Authentication failed.");
+      }
+
+      let destination = getRedirectPath();
+      try {
+        const { user } = await apiFetch("/api/auth/me");
+        if (!searchParams.get("next") && user?.role === "admin") {
+          destination = "/dashboard/admin";
+        }
+      } catch (error) {
+        toast.error(`Signed in, but the RecipeHub API is unavailable: ${error.message}`);
+      }
+
+      toast.success(isRegister ? "Your account is ready!" : "Welcome back!");
+      router.push(destination);
       router.refresh();
     } catch (error) {
-      setMessage(error.message);
+      toast.error(error.message || "Could not authenticate. Please try again.");
     } finally {
+      setPending(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setPending(true);
+    try {
+      const callbackURL = new URL(getRedirectPath(), window.location.origin).toString();
+      const result = await authClient.signIn.social({
+        provider: "google",
+        callbackURL,
+        errorCallbackURL: window.location.href,
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message || "Could not continue with Google.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Could not continue with Google.");
       setPending(false);
     }
   }
@@ -83,19 +129,17 @@ export function AuthForm({ mode }) {
         type="submit"
         variant="solid"
       >
-        {pending ? "Please wait..." : isRegister ? "Create Account" : "Login"}
+        {pending ? "Please wait..." : isRegister ? "Sign Up" : "Login"}
       </Button>
-      {!isRegister ? (
-        <Button
-          className="button button-secondary"
-          type="button"
-          variant="bordered"
-          onPress={() => setMessage("Google login is configured in Better Auth; add its route handler to enable OAuth redirects.")}
-        >
-          <Globe size={18} /> Continue with Google
-        </Button>
-      ) : null}
-      {message ? <p className="toast-message">{message}</p> : null}
+      <Button
+        className="button button-secondary"
+        isDisabled={pending}
+        type="button"
+        variant="bordered"
+        onPress={handleGoogleSignIn}
+      >
+        <Globe size={18} /> Continue with Google
+      </Button>
     </form>
   );
 }

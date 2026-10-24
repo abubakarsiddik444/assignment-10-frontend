@@ -49,7 +49,7 @@ export default async function Home() {
         </div>
         <div className="recipe-grid">
           {featuredRecipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
+            <RecipeCard key={recipe.id || recipe._id} recipe={recipe} />
           ))}
         </div>
       </section>
@@ -61,7 +61,7 @@ export default async function Home() {
         </div>
         <div className="popular-list">
           {popularRecipes.map((recipe, index) => (
-            <article className="popular-item" key={recipe.id}>
+            <article className="popular-item" key={recipe.id || recipe._id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>{recipe.recipeName}</h3>

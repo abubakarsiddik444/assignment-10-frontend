@@ -32,7 +32,7 @@ export function SiteShell({ children }) {
             Login
           </Link>
           <Link className="button button-primary compact" href="/register">
-            Join
+            Sign up
           </Link>
         </div>
       </header>

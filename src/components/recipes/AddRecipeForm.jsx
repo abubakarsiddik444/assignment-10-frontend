@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function AddRecipeForm() {
   const [message, setMessage] = useState("");
@@ -14,10 +15,14 @@ export function AddRecipeForm() {
     setMessage("");
     const formData = new FormData(event.currentTarget);
     const imageFile = formData.get("recipeImage");
+    const form = event.currentTarget;
     let recipeImage = "";
 
     try {
-      if (imageFile?.size && process.env.NEXT_PUBLIC_IMGBB_API_KEY) {
+      if (imageFile?.size && !process.env.NEXT_PUBLIC_IMGBB_API_KEY) {
+        throw new Error("Add the imgbb API key to NEXT_PUBLIC_IMGBB_API_KEY before uploading images.");
+      }
+      if (imageFile?.size) {
         const uploadData = new FormData();
         uploadData.append("image", imageFile);
         const response = await fetch(
@@ -25,7 +30,10 @@ export function AddRecipeForm() {
           { method: "POST", body: uploadData }
         );
         const result = await response.json();
-        recipeImage = result.data?.url || "";
+        if (!response.ok || !result.success || !result.data?.url) {
+          throw new Error(result.error?.message || "The recipe image upload failed.");
+        }
+        recipeImage = result.data.url;
       }
 
       await apiFetch("/api/recipes", {
@@ -41,10 +49,12 @@ export function AddRecipeForm() {
           instructions: formData.get("instructions"),
         }),
       });
-      event.currentTarget.reset();
+      form.reset();
       setMessage("Recipe published successfully.");
+      toast.success("Recipe published successfully.");
     } catch (error) {
       setMessage(error.message);
+      toast.error(error.message);
     } finally {
       setPending(false);
     }

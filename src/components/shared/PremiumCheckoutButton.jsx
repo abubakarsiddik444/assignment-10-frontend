@@ -4,6 +4,7 @@ import { Button } from "@heroui/react";
 import { ShoppingCart } from "@gravity-ui/icons";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function PremiumCheckoutButton() {
   const [message, setMessage] = useState("");
@@ -20,6 +21,7 @@ export function PremiumCheckoutButton() {
       window.location.href = data.url;
     } catch (error) {
       setMessage(error.message);
+      toast.error(error.message);
       setPending(false);
     }
   }

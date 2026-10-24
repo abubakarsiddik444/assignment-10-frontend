@@ -6,6 +6,9 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 
 - Next.js 16 App Router
 - React 19
+- Better Auth with MongoDB
+- Express API with JWT bearer verification
+- HeroUI, Gravity UI icons, and React Hot Toast
 - Tailwind CSS 4 entrypoint with custom global design tokens
 - Framer Motion
 - Lucide React icons
@@ -18,19 +21,23 @@ credentials, JWT/Better Auth secrets, Google client secrets, or Stripe secret
 keys in a `NEXT_PUBLIC_*` variable or the frontend environment.
 
 The frontend needs `NEXT_PUBLIC_API_BASE_URL` (for local development:
-`http://localhost:5000`). The backend needs `MONGODB_URI`, a random
-`JWT_SECRET` of at least 32 characters, `CLIENT_ORIGIN`, and `STRIPE_SECRET_KEY`
-to enable checkout. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
-`GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET` for the Better Auth/OAuth
-configuration. `NEXT_PUBLIC_IMGBB_API_KEY` is used by the browser image upload.
-Generate both secrets yourself (for example,
+`http://localhost:5000`), `MONGODB_URI`, `DB_NAME`, `JWT_SECRET`,
+`BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL`. The backend needs the same
+`MONGODB_URI` and `JWT_SECRET`, plus `CLIENT_ORIGIN` and `STRIPE_SECRET_KEY`.
+Use `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Better Auth Google sign-in.
+`NEXT_PUBLIC_IMGBB_API_KEY` is used by browser image uploads and
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is safe to expose to the browser.
+Generate `JWT_SECRET` and `BETTER_AUTH_SECRET` yourself (for example,
 `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`).
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the backend environment only if you
+want the API to create an initial administrator. Use a unique, strong password.
+For Google OAuth, register `http://localhost:3000/api/auth/callback/google`
+as a development redirect URI and the matching callback URL for your deployed
+frontend.
 
-The current frontend `.env` contains server credentials named with the
-`NEXT_PUBLIC_` prefix. Move those values to the backend `.env` using the
-server-only names above, remove their old frontend entries, and rotate any
-secrets that may already have been exposed or committed. Do not send secret
-values in chat.
+MongoDB, Better Auth, JWT, and Google OAuth credentials are server-side values:
+do not give them a `NEXT_PUBLIC_` prefix. Keep Stripe's secret key only in the
+backend `.env`, never in the frontend.
 
 ## Routes
 
@@ -63,7 +70,8 @@ npm run dev
 ```
 
 Then start the frontend from this directory after creating `.env.local` from
-`.env.example` and setting `BETTER_AUTH_SECRET`:
+`.env.example` and setting `BETTER_AUTH_SECRET`, `JWT_SECRET`, and
+`MONGODB_URI` (the MongoDB URI and JWT secret must match the backend values):
 
 ```bash
 npm install

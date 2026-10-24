@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Clock, Heart, Star } from "lucide-react";
 
 export function RecipeCard({ recipe, variant = "default" }) {
+  const recipeId = recipe.id || recipe._id;
+
   return (
     <article className={`recipe-card ${variant === "compact" ? "recipe-card-compact" : ""}`}>
       <Image
@@ -30,7 +32,7 @@ export function RecipeCard({ recipe, variant = "default" }) {
             <Star size={16} /> {recipe.difficultyLevel}
           </span>
         </div>
-        <Link className="button button-secondary" href={`/recipes/${recipe.id}`}>
+        <Link className="button button-secondary" href={`/recipes/${recipeId}`}>
           View Details
         </Link>
       </div>
