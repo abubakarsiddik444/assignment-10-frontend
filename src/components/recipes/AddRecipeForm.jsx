@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Card, Input, Link, ListBox, Select, TextArea } from "@heroui/react";
+import { Lock } from "@gravity-ui/icons";
+import { Button, Card, Input, Link, ListBox, Select, Spinner, TextArea } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
@@ -11,6 +12,28 @@ export function AddRecipeForm({ recipeId }) {
   const [pending, setPending] = useState(false);
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(Boolean(recipeId));
+  const [quota, setQuota] = useState(null);
+  const [quotaError, setQuotaError] = useState("");
+
+  useEffect(() => {
+    if (recipeId) return;
+    let active = true;
+    apiFetch("/api/dashboard/overview")
+      .then((overview) => {
+        if (active) {
+          setQuota({
+            recipeCount: overview.totalRecipes,
+            isPremium: overview.isPremium,
+          });
+        }
+      })
+      .catch((error) => {
+        if (active) setQuotaError(error.message || "Could not check your recipe publishing limit.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [recipeId]);
 
   useEffect(() => {
     if (!recipeId) return;
@@ -75,6 +98,11 @@ export function AddRecipeForm({ recipeId }) {
         }),
       });
       if (!recipeId) form.reset();
+      if (!recipeId) {
+        setQuota((current) =>
+          current ? { ...current, recipeCount: current.recipeCount + 1 } : current,
+        );
+      }
       setMessage(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
       toast.success(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
     } catch (error) {
@@ -91,10 +119,37 @@ export function AddRecipeForm({ recipeId }) {
   if (recipeId && !recipe) {
     return <Card><Card.Content><p role="alert">{message || "This recipe could not be loaded."}</p></Card.Content></Card>;
   }
+  if (!recipeId && !quota && !quotaError) {
+    return <Card><Card.Content className="flex items-center gap-3"><Spinner /> Checking your publishing limit...</Card.Content></Card>;
+  }
+  if (!recipeId && quotaError) {
+    return <Card><Card.Content><p role="alert">{quotaError}</p></Card.Content></Card>;
+  }
+  if (!recipeId && quota && !quota.isPremium && quota.recipeCount >= 3) {
+    return (
+      <Card className="border border-amber-300 dark:border-amber-800">
+        <Card.Content className="grid justify-items-center gap-4 p-8 text-center">
+          <Lock size={36} className="text-amber-600 dark:text-amber-400" />
+          <div>
+            <h2 className="m-0 text-2xl font-bold">Free recipe limit reached</h2>
+            <p className="mt-2 max-w-lg text-stone-600 dark:text-stone-300">
+              You have published all 3 recipes available on a free account. Upgrade to Premium to publish unlimited recipes.
+            </p>
+          </div>
+          <Link className="button button--primary button--lg" href="/premium">Upgrade to Premium</Link>
+        </Card.Content>
+      </Card>
+    );
+  }
 
   return (
     <Card>
       <Card.Content>
+    {!recipeId && quota && !quota.isPremium ? (
+      <p className="mb-4 text-sm font-semibold text-stone-600 dark:text-stone-300">
+        {quota.recipeCount} of 3 free recipes published
+      </p>
+    ) : null}
     <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
       <label>
         Recipe Name
