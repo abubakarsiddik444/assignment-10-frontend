@@ -2,6 +2,18 @@
 
 RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers the public recipe discovery flow, user dashboard, admin dashboard, premium membership screen, payment success screen, theme toggle, pagination UI, reporting modal, and Framer Motion animation requirement.
 
+<p align="center">
+  <img src="https://img.shields.io/badge/NEXT.JS-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/REACT-149ECA?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/EXPRESS-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/MONGODB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/BETTER_AUTH-4B32C3?style=for-the-badge" alt="Better Auth" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+  <img src="https://img.shields.io/badge/TAILWIND_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/HEROUI-7828C8?style=for-the-badge" alt="HeroUI" />
+  <img src="https://img.shields.io/badge/STRIPE-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe" />
+</p>
+
 ## Tech Stack
 
 - Next.js 16 App Router
@@ -11,6 +23,44 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 - HeroUI, Gravity UI icons, and React Hot Toast
 - Tailwind CSS 4 utility classes for all application styling
 - Framer Motion
+
+## Features and Functions
+
+### Visitor and recipe features
+
+- Browse recipes and open recipe details.
+- Search recipes, filter by category, and move through paginated results.
+- Like a recipe once per signed-in account, add or remove favorites, and report recipes.
+- View recipe images, ingredients, instructions, preparation time, difficulty, and author.
+- Switch between light and dark themes.
+
+### Account and dashboard features
+
+- Register or sign in with email and password; Google sign-in is available when configured.
+- Sign out, view and update profile details, and display profile image and gender.
+- View personal dashboard totals for recipes, favorites, likes, and Premium status.
+- Create, edit, and delete your own recipes.
+- Publish up to 3 recipes on a free account; Premium accounts can publish without this limit.
+- View purchased recipes and payment confirmation status.
+
+### Premium and payments
+
+- Start Stripe Checkout for Premium membership or recipe purchases.
+- Verify a completed Checkout session with the backend before showing a confirmed state.
+- Save completed transactions and enable Premium benefits after successful verification.
+
+### Admin features
+
+- Restrict the admin workspace and admin API actions to administrator accounts.
+- View admin dashboard totals and transactions.
+- Assign or remove admin roles and block or unblock accounts.
+- Feature or unfeature recipes, remove recipes, and review, dismiss, or remove reported content.
+
+### Shared application functions
+
+- Use the same-origin API proxy to attach a short-lived backend JWT to authenticated API requests.
+- Show loading, empty, success, and error states for data-driven dashboard and payment views.
+- Use HeroUI components, Gravity UI icons, toast notifications, and Framer Motion effects.
 
 ## Environment
 
