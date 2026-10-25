@@ -24,9 +24,19 @@ export async function apiFetch(path, options = {}) {
     },
   });
 
-  const data = await response.json().catch(() => ({}));
+  const responseBody = await response.text();
+  let data = {};
+  if (responseBody) {
+    try {
+      data = JSON.parse(responseBody);
+    } catch {
+      data = {};
+    }
+  }
   if (!response.ok) {
-    const error = new Error(data.message || "Request failed");
+    const error = new Error(
+      data.message || `The server returned an unexpected response (${response.status}).`,
+    );
     error.status = response.status;
     throw error;
   }
