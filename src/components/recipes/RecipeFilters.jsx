@@ -1,7 +1,7 @@
 "use client";
 
 import { Magnifier } from "@gravity-ui/icons";
-import { Button, Input, Pagination } from "@heroui/react";
+import { Card, Input, ListBox, Pagination, Select } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { RecipeCard } from "./RecipeCard";
 
@@ -25,7 +25,8 @@ export function RecipeFilters({ recipes, categories }) {
 
   return (
     <div>
-      <div className="mb-7 grid grid-cols-[minmax(240px,1fr)_minmax(180px,260px)] items-end gap-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 max-[660px]:grid-cols-1">
+      <Card className="mb-7">
+        <Card.Content className="grid grid-cols-[minmax(240px,1fr)_minmax(180px,260px)] items-end gap-4 p-5 max-[660px]:grid-cols-1">
         <label className="grid gap-2 font-semibold text-stone-700 dark:text-stone-200" htmlFor="recipe-search">
           Search recipes
           <div className="relative">
@@ -45,22 +46,28 @@ export function RecipeFilters({ recipes, categories }) {
         </label>
         <label className="grid gap-2 font-semibold text-stone-700 dark:text-stone-200" htmlFor="category-filter">
           Category
-          <select
-            className="h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-stone-900 outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100"
-            id="category-filter"
-            value={category}
-            onChange={(event) => {
-              setCategory(event.target.value);
+          <Select
+            aria-label="Category"
+            selectedKey={category}
+            onSelectionChange={(key) => {
+              setCategory(String(key));
               setPage(1);
             }}
           >
-            <option>All</option>
-            {categories.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
+            <Select.Trigger id="category-filter" className="min-h-11">
+              <Select.Value />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox>
+                {["All", ...categories].map((item) => (
+                  <ListBox.Item key={item} id={item} textValue={item}>{item}</ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+          </Select>
         </label>
-      </div>
+        </Card.Content>
+      </Card>
       <div>
         <div className="mb-[18px] flex items-center justify-between text-stone-500 dark:text-stone-400 max-[660px]:flex-col max-[660px]:items-start">
           <strong>

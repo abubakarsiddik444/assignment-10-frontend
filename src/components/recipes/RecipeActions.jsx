@@ -2,7 +2,7 @@
 
 import { CreditCard, Flag, Heart } from "@gravity-ui/icons";
 import { Xmark } from "@gravity-ui/icons";
-import { Button } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { RecipeFavoriteButton } from "./RecipeFavoriteButton";
@@ -84,7 +84,8 @@ export function RecipeActions({ recipe }) {
       {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300">{message}</p> : null}
       {showReport ? (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-black/55 p-[18px]" role="dialog" aria-modal="true" aria-labelledby="report-title">
-          <div className="relative w-full max-w-[460px] rounded-2xl border border-stone-200 bg-white p-6 shadow-2xl dark:border-neutral-700 dark:bg-neutral-900 [&_h2]:m-0 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_p]:mb-4 [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
+          <Card className="relative w-full max-w-[460px] shadow-2xl [&_h2]:m-0 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_p]:mb-4 [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
+            <Card.Content className="p-6">
             <Button
               className="absolute right-3 top-3"
               variant="tertiary"
@@ -120,7 +121,8 @@ export function RecipeActions({ recipe }) {
                 </Button>
               ))}
             </div>
-          </div>
+            </Card.Content>
+          </Card>
         </div>
       ) : null}
     </>

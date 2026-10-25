@@ -1,4 +1,5 @@
 import { ChartLineArrowUp, Cup, Heart, SealCheck } from "@gravity-ui/icons";
+import { Card } from "@heroui/react";
 import { getOverview } from "@/lib/api";
 
 export const metadata = {
@@ -14,26 +15,34 @@ export default async function DashboardPage() {
         <h1>Overview</h1>
       </div>
       <div className="grid grid-cols-4 gap-[18px] max-[980px]:grid-cols-2 max-[660px]:grid-cols-1">
-        <article className="grid min-h-[150px] content-between rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+        <Card className="grid min-h-[150px] content-between [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          <Card.Content className="grid min-h-[150px] content-between p-[22px]">
           <Cup size={22} />
           <span>Total Recipes</span>
           <strong>{stats.totalRecipes}</strong>
-        </article>
-        <article className="grid min-h-[150px] content-between rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          </Card.Content>
+        </Card>
+        <Card className="grid min-h-[150px] content-between [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          <Card.Content className="grid min-h-[150px] content-between p-[22px]">
           <Heart size={22} />
           <span>Total Favorites</span>
           <strong>{stats.totalFavorites}</strong>
-        </article>
-        <article className="grid min-h-[150px] content-between rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          </Card.Content>
+        </Card>
+        <Card className="grid min-h-[150px] content-between [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          <Card.Content className="grid min-h-[150px] content-between p-[22px]">
           <ChartLineArrowUp size={22} />
           <span>Likes Received</span>
           <strong>{stats.totalLikesReceived}</strong>
-        </article>
-        <article className="grid min-h-[150px] content-between rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          </Card.Content>
+        </Card>
+        <Card className="grid min-h-[150px] content-between [&_svg]:text-emerald-800 dark:[&_svg]:text-emerald-300 [&_span]:text-stone-500 dark:[&_span]:text-stone-400 [&_strong]:text-3xl">
+          <Card.Content className="grid min-h-[150px] content-between p-[22px]">
           <SealCheck size={22} />
           <span>Premium</span>
           <strong>{stats.isPremium ? "Active" : "Locked"}</strong>
-        </article>
+          </Card.Content>
+        </Card>
       </div>
     </section>
   );

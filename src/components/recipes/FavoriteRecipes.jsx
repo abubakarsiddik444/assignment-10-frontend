@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Card } from "@heroui/react";
 import { apiFetch } from "@/lib/api";
 import { RecipeCard } from "./RecipeCard";
 
@@ -16,10 +17,10 @@ export function FavoriteRecipes() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading your favorites...</p>;
-  if (error) return <p role="alert">{error}</p>;
+  if (loading) return <Card><Card.Content>Loading your favorites...</Card.Content></Card>;
+  if (error) return <Card><Card.Content><p role="alert">{error}</p></Card.Content></Card>;
   if (recipes.length === 0) {
-    return <p>You have no favorites yet. Save a recipe to see it here.</p>;
+    return <Card><Card.Content>You have no favorites yet. Save a recipe to see it here.</Card.Content></Card>;
   }
 
   return (

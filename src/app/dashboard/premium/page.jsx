@@ -1,4 +1,5 @@
 import { Check, SealCheck, Sparkles } from "@gravity-ui/icons";
+import { Card } from "@heroui/react";
 import { PremiumCheckoutButton } from "@/components/shared/PremiumCheckoutButton";
 
 export const metadata = {
@@ -13,7 +14,8 @@ export default function PremiumPage() {
         <h1>Unlock unlimited recipe publishing</h1>
         <p>Stripe Checkout-ready membership flow with premium badge and transaction storage.</p>
       </div>
-      <div className="w-full max-w-[520px] rounded-2xl border border-stone-200 bg-white p-[22px] text-center shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_h2]:m-0 [&_h2]:text-2xl [&_h2]:font-bold [&_svg]:mx-auto [&_svg]:text-amber-500">
+      <Card className="w-full max-w-[520px] text-center [&_h2]:m-0 [&_h2]:text-2xl [&_h2]:font-bold [&_svg]:mx-auto [&_svg]:text-amber-500">
+        <Card.Content className="p-[22px]">
         <Sparkles size={30} />
         <h2>RecipeHub Premium</h2>
         <p className="my-3 text-5xl font-black text-emerald-800 dark:text-emerald-300">$19.99</p>
@@ -27,7 +29,8 @@ export default function PremiumPage() {
           <li>Saved transaction in payments collection</li>
         </ul>
         <PremiumCheckoutButton />
-      </div>
+        </Card.Content>
+      </Card>
     </section>
   );
 }

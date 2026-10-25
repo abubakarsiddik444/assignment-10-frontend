@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { SealCheck } from "@gravity-ui/icons";
-import { Button, Input } from "@heroui/react";
+import { Button, Card, Input, ListBox, Select } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
@@ -104,8 +104,10 @@ export function ProfileForm() {
           ) : null}
         </div>
       </div>
+      <Card>
+        <Card.Content>
       <form
-        className="grid grid-cols-2 gap-4 max-[660px]:grid-cols-1 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_select]:min-h-[46px] [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-stone-200 [&_select]:bg-stone-100 [&_select]:px-3 [&_select]:py-2.5 [&_select]:text-stone-900 dark:[&_input]:border-neutral-700 dark:[&_input]:bg-neutral-800 dark:[&_input]:text-stone-100 dark:[&_select]:border-neutral-700 dark:[&_select]:bg-neutral-800 dark:[&_select]:text-stone-100"
+        className="grid grid-cols-2 gap-4 max-[660px]:grid-cols-1 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 dark:[&_input]:border-neutral-700 dark:[&_input]:bg-neutral-800 dark:[&_input]:text-stone-100"
         onSubmit={handleSubmit}
       >
         <label>
@@ -129,16 +131,23 @@ export function ProfileForm() {
         </label>
         <label>
           Gender
-          <select
-            value={values.gender}
-            onChange={(event) => setProfile({ ...values, gender: event.target.value })}
-            required
+          <Select
+            aria-label="Gender"
+            selectedKey={values.gender || null}
+            onSelectionChange={(key) => setProfile({ ...values, gender: String(key ?? "") })}
+            isRequired
           >
-            <option value="" disabled>Select an option</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            <option value="Other">Other</option>
-          </select>
+            <Select.Trigger className="min-h-11">
+              <Select.Value placeholder="Select an option" />
+            </Select.Trigger>
+            <Select.Popover>
+              <ListBox>
+                {["Female", "Male", "Other"].map((gender) => (
+                  <ListBox.Item key={gender} id={gender} textValue={gender}>{gender}</ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+          </Select>
         </label>
         <Button
           variant="primary"
@@ -148,6 +157,8 @@ export function ProfileForm() {
           {saving ? "Saving..." : "Update Profile"}
         </Button>
       </form>
+        </Card.Content>
+      </Card>
     </section>
   );
 }

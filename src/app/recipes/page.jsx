@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Card } from "@heroui/react";
 import { RecipeFilters } from "@/components/recipes/RecipeFilters";
 import { getRecipes } from "@/lib/api";
 import { categories } from "@/lib/data";
@@ -25,9 +26,9 @@ export default function BrowseRecipesPage() {
       </div>
       <Suspense
         fallback={
-          <div className="grid min-h-48 place-items-center rounded-2xl border border-stone-200 bg-white text-stone-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-stone-400">
+          <Card className="grid min-h-48 place-items-center text-stone-500 dark:text-stone-400">
             Loading recipes...
-          </div>
+          </Card>
         }
       >
         <BrowseRecipesContent />

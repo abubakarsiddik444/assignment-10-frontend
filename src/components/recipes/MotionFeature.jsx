@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Medal, Persons, Sparkles } from "@gravity-ui/icons";
+import { Card } from "@heroui/react";
 
 const features = [
   {
@@ -32,20 +33,23 @@ export function MotionFeature() {
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
-            <motion.article
-              className="min-h-[210px] rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 [&_h3]:mt-[18px] [&_h3]:text-xl [&_h3]:font-bold [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300"
+            <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ delay: index * 0.12, duration: 0.45 }}
             >
+              <Card className="min-h-[210px] [&_h3]:mt-[18px] [&_h3]:text-xl [&_h3]:font-bold [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
+                <Card.Content className="p-[22px]">
               <span className="inline-grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                 <Icon size={22} />
               </span>
               <h3>{feature.title}</h3>
               <p>{feature.text}</p>
-            </motion.article>
+                </Card.Content>
+              </Card>
+            </motion.div>
           );
         })}
       </div>

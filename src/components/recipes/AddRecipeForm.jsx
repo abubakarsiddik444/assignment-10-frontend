@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button, Input, TextArea } from "@heroui/react";
+import { Button, Card, Input, ListBox, Select, TextArea } from "@heroui/react";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
@@ -62,23 +62,29 @@ export function AddRecipeForm() {
   }
 
   return (
-    <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_select]:min-h-[46px] [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-stone-200 [&_select]:bg-stone-100 [&_select]:px-3 [&_select]:py-2.5 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_select]:dark:border-neutral-700 [&_select]:dark:bg-neutral-800 [&_select]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
+    <Card>
+      <Card.Content>
+    <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
       <label>
         Recipe Name
         <Input name="recipeName" type="text" placeholder="Recipe name" required />
       </label>
       <label>
         Recipe Image Upload
-        <input name="recipeImage" type="file" accept="image/*" />
+        <Input name="recipeImage" type="file" accept="image/*" />
       </label>
       <label>
         Category
-        <select name="category">
-          <option>Dinner</option>
-          <option>Breakfast</option>
-          <option>Dessert</option>
-          <option>Vegan</option>
-        </select>
+        <Select aria-label="Category" defaultSelectedKey="Dinner" name="category">
+          <Select.Trigger className="min-h-11"><Select.Value /></Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {["Dinner", "Breakfast", "Dessert", "Vegan"].map((item) => (
+                <ListBox.Item key={item} id={item} textValue={item}>{item}</ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
       </label>
       <label>
         Cuisine Type
@@ -86,11 +92,16 @@ export function AddRecipeForm() {
       </label>
       <label>
         Difficulty Level
-        <select name="difficultyLevel">
-          <option>Easy</option>
-          <option>Medium</option>
-          <option>Hard</option>
-        </select>
+        <Select aria-label="Difficulty Level" defaultSelectedKey="Easy" name="difficultyLevel">
+          <Select.Trigger className="min-h-11"><Select.Value /></Select.Trigger>
+          <Select.Popover>
+            <ListBox>
+              {["Easy", "Medium", "Hard"].map((item) => (
+                <ListBox.Item key={item} id={item} textValue={item}>{item}</ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
       </label>
       <label>
         Preparation Time
@@ -112,5 +123,7 @@ export function AddRecipeForm() {
       </Link>
       {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300 col-span-full max-[660px]:col-span-1">{message}</p> : null}
     </form>
+      </Card.Content>
+    </Card>
   );
 }
