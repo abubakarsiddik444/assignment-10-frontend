@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { Card } from "@heroui/react";
 import { RecipeFilters } from "@/components/recipes/RecipeFilters";
 import { getRecipes } from "@/lib/api";
@@ -9,6 +10,7 @@ export const metadata = {
 };
 
 async function BrowseRecipesContent() {
+  await connection();
   const { recipes } = await getRecipes({ limit: 100 });
   return <RecipeFilters recipes={recipes} categories={categories} />;
 }
