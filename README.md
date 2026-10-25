@@ -4,23 +4,22 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 
 <p align="center">
   <img src="https://img.shields.io/badge/NEXT.JS-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
-  <img src="https://img.shields.io/badge/REACT-149ECA?style=for-the-badge&logo=react&logoColor=white" alt="React" />
   <img src="https://img.shields.io/badge/EXPRESS-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
   <img src="https://img.shields.io/badge/MONGODB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/BETTER_AUTH-4B32C3?style=for-the-badge" alt="Better Auth" />
   <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
   <img src="https://img.shields.io/badge/TAILWIND_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/HEROUI-7828C8?style=for-the-badge" alt="HeroUI" />
+  <img src="https://img.shields.io/badge/GRAVITY_UI_ICONS-FF4F00?style=for-the-badge" alt="Gravity UI Icons" />
   <img src="https://img.shields.io/badge/STRIPE-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe" />
 </p>
 
 ## Tech Stack
 
 - Next.js 16 App Router
-- React 19
 - Better Auth with MongoDB
 - Express API with JWT bearer verification
-- HeroUI, Gravity UI icons, and React Hot Toast
+- HeroUI, Gravity UI Icons, and React Hot Toast
 - Tailwind CSS 4 utility classes for all application styling
 - Framer Motion
 
