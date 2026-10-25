@@ -1,13 +1,38 @@
 "use client";
 
 import { Button, Card, Input, Link, ListBox, Select, TextArea } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
+import { categories } from "@/lib/data";
 
-export function AddRecipeForm() {
+export function AddRecipeForm({ recipeId }) {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(Boolean(recipeId));
+
+  useEffect(() => {
+    if (!recipeId) return;
+    let active = true;
+    apiFetch(`/api/recipes/${recipeId}`)
+      .then(({ recipe: currentRecipe }) => {
+        if (!currentRecipe) throw new Error("Recipe not found.");
+        if (active) setRecipe(currentRecipe);
+      })
+      .catch((error) => {
+        if (active) {
+          setMessage(error.message || "Could not load this recipe.");
+          toast.error(error.message || "Could not load this recipe.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [recipeId]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -16,7 +41,7 @@ export function AddRecipeForm() {
     const formData = new FormData(event.currentTarget);
     const imageFile = formData.get("recipeImage");
     const form = event.currentTarget;
-    let recipeImage = "";
+    let recipeImage = recipe?.recipeImage || "";
 
     try {
       if (imageFile?.size && !process.env.NEXT_PUBLIC_IMGBB_API_KEY) {
@@ -36,8 +61,8 @@ export function AddRecipeForm() {
         recipeImage = result.data.url;
       }
 
-      await apiFetch("/api/recipes", {
-        method: "POST",
+      await apiFetch(recipeId ? `/api/recipes/${recipeId}` : "/api/recipes", {
+        method: recipeId ? "PATCH" : "POST",
         body: JSON.stringify({
           recipeName: formData.get("recipeName"),
           recipeImage,
@@ -49,9 +74,9 @@ export function AddRecipeForm() {
           instructions: formData.get("instructions"),
         }),
       });
-      form.reset();
-      setMessage("Recipe published successfully.");
-      toast.success("Recipe published successfully.");
+      if (!recipeId) form.reset();
+      setMessage(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
+      toast.success(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
     } catch (error) {
       setMessage(error.message);
       toast.error(error.message);
@@ -60,13 +85,20 @@ export function AddRecipeForm() {
     }
   }
 
+  if (loading) {
+    return <Card><Card.Content>Loading recipe details...</Card.Content></Card>;
+  }
+  if (recipeId && !recipe) {
+    return <Card><Card.Content><p role="alert">{message || "This recipe could not be loaded."}</p></Card.Content></Card>;
+  }
+
   return (
     <Card>
       <Card.Content>
     <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
       <label>
         Recipe Name
-        <Input name="recipeName" type="text" placeholder="Recipe name" required />
+        <Input name="recipeName" type="text" placeholder="Recipe name" defaultValue={recipe?.recipeName || ""} required />
       </label>
       <label>
         Recipe Image Upload
@@ -74,11 +106,11 @@ export function AddRecipeForm() {
       </label>
       <label>
         Category
-        <Select aria-label="Category" defaultSelectedKey="Dinner" name="category">
+        <Select aria-label="Category" defaultSelectedKey={recipe?.category || "Dinner"} name="category">
           <Select.Trigger className="min-h-11"><Select.Value /></Select.Trigger>
           <Select.Popover>
             <ListBox>
-              {["Dinner", "Breakfast", "Dessert", "Vegan"].map((item) => (
+              {categories.map((item) => (
                 <ListBox.Item key={item} id={item} textValue={item}>{item}</ListBox.Item>
               ))}
             </ListBox>
@@ -87,11 +119,11 @@ export function AddRecipeForm() {
       </label>
       <label>
         Cuisine Type
-        <Input name="cuisineType" type="text" placeholder="Thai, Indian, Mexican..." required />
+        <Input name="cuisineType" type="text" placeholder="Thai, Indian, Mexican..." defaultValue={recipe?.cuisineType || ""} required />
       </label>
       <label>
         Difficulty Level
-        <Select aria-label="Difficulty Level" defaultSelectedKey="Easy" name="difficultyLevel">
+        <Select aria-label="Difficulty Level" defaultSelectedKey={recipe?.difficultyLevel || "Easy"} name="difficultyLevel">
           <Select.Trigger className="min-h-11"><Select.Value /></Select.Trigger>
           <Select.Popover>
             <ListBox>
@@ -104,18 +136,18 @@ export function AddRecipeForm() {
       </label>
       <label>
         Preparation Time
-        <Input name="preparationTime" type="text" placeholder="35 min" required />
+        <Input name="preparationTime" type="text" placeholder="35 min" defaultValue={recipe?.preparationTime || ""} required />
       </label>
       <label className="col-span-full max-[660px]:col-span-1">
         Ingredients
-        <TextArea name="ingredients" placeholder="One ingredient per line" rows={4} />
+        <TextArea name="ingredients" placeholder="One ingredient per line" defaultValue={recipe?.ingredients?.join("\n") || ""} rows={4} />
       </label>
       <label className="col-span-full max-[660px]:col-span-1">
         Instructions
-        <TextArea name="instructions" placeholder="Detailed cooking steps" rows={6} required />
+        <TextArea name="instructions" placeholder="Detailed cooking steps" defaultValue={recipe?.instructions || ""} rows={6} required />
       </label>
       <Button variant="primary" type="submit" isDisabled={pending}>
-        {pending ? "Publishing..." : "Publish Recipe"}
+        {pending ? (recipeId ? "Saving..." : "Publishing...") : (recipeId ? "Save Changes" : "Publish Recipe")}
       </Button>
       <Link className="button button--secondary" href="/premium">
         Become Premium
