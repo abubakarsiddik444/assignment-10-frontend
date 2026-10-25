@@ -1,5 +1,4 @@
-import { payments } from "@/lib/data";
-import { Card } from "@heroui/react";
+import { AdminTransactionsManager } from "@/components/admin/AdminTransactionsManager";
 
 export const metadata = {
   title: "Transactions - RecipeHub",
@@ -12,32 +11,7 @@ export default function TransactionsPage() {
         <span className="mb-3 inline-block text-xs font-extrabold uppercase tracking-[.12em] text-orange-700 dark:text-orange-300">Payments</span>
         <h1>Transactions</h1>
       </div>
-      <Card className="overflow-hidden">
-        <Card.Content className="overflow-x-auto p-0 [&_table]:min-w-[720px] [&_table]:w-full [&_table]:border-collapse [&_th]:border-b [&_th]:border-stone-200 [&_th]:px-4 [&_th]:py-3.5 [&_th]:text-left [&_th]:text-xs [&_th]:font-bold [&_th]:uppercase [&_th]:tracking-widest [&_th]:text-stone-500 [&_td]:border-b [&_td]:border-stone-200 [&_td]:px-4 [&_td]:py-3.5 [&_tr:last-child_td]:border-b-0 dark:[&_th]:border-neutral-800 dark:[&_td]:border-neutral-800 dark:[&_th]:text-stone-400">
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Transaction ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((payment) => (
-              <tr key={payment.transactionId}>
-                <td>{payment.userEmail}</td>
-                <td>${payment.amount}</td>
-                <td>{payment.paidAt}</td>
-                <td>{payment.paymentStatus}</td>
-                <td>{payment.transactionId}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        </Card.Content>
-      </Card>
+      <AdminTransactionsManager />
     </section>
   );
 }
