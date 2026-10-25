@@ -1,61 +1,68 @@
 "use client";
 
-import { CreditCard, Flag, Heart, Star } from "@gravity-ui/icons";
+import { CreditCard, Flag, Heart } from "@gravity-ui/icons";
 import { Xmark } from "@gravity-ui/icons";
-import { useState } from "react";
+import { Button } from "@heroui/react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { RecipeFavoriteButton } from "./RecipeFavoriteButton";
+import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export function RecipeActions({ recipe }) {
+  const { data: session, isPending: sessionPending } = authClient.useSession();
   const [likes, setLikes] = useState(recipe.likesCount);
-  const [favorite, setFavorite] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [liking, setLiking] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (sessionPending || !session?.user) return;
+    apiFetch(`/api/recipes/${recipe._id || recipe.id}/like`)
+      .then((data) => {
+        setLiked(data.liked);
+        setLikes(data.likesCount);
+      })
+      .catch((error) => {
+        if (error.status !== 401) {
+          toast.error(`Could not check like status: ${error.message}`, {
+            id: "recipe-like-status-error",
+          });
+        }
+      });
+  }, [recipe._id, recipe.id, session?.user, sessionPending]);
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-2.5">
-        <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
-          type="button"
-          onClick={async () => {
-            setLikes((current) => current + 1);
+        <Button
+          variant="primary"
+          isDisabled={liking || liked}
+          onPress={async () => {
+            setLiking(true);
             try {
               const data = await apiFetch(`/api/recipes/${recipe._id || recipe.id}/like`, {
                 method: "POST",
               });
-              if (data.recipe?.likesCount) setLikes(data.recipe.likesCount);
+              if (data.recipe) setLikes(data.recipe.likesCount);
+              setLiked(data.liked);
+              if (data.liked) toast.success("You liked this recipe.");
+              else toast("You have already liked this recipe.");
             } catch (error) {
               setMessage(error.message);
               toast.error(error.message);
+            } finally {
+              setLiking(false);
             }
           }}
         >
-          <Heart size={18} /> Like ({likes})
-        </button>
-        <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-white text-stone-800 hover:bg-stone-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800"
-          type="button"
-          onClick={async () => {
-            try {
-              const data = await apiFetch(`/api/recipes/${recipe._id || recipe.id}/favorite`, {
-                method: "POST",
-              });
-              setFavorite(data.favorited);
-              setMessage(data.favorited ? "Added to favorites." : "Removed from favorites.");
-              toast.success(data.favorited ? "Added to favorites." : "Removed from favorites.");
-            } catch (error) {
-              setMessage(error.message);
-              toast.error(error.message);
-            }
-          }}
-        >
-          <Star size={18} /> {favorite ? "Favorited" : "Favorite"}
-        </button>
-        <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-white text-stone-800 hover:bg-stone-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800"
-          type="button"
-          onClick={async () => {
+          <Heart size={18} /> {liked ? "Liked" : liking ? "Liking..." : "Like"} ({likes})
+        </Button>
+        <RecipeFavoriteButton recipeId={recipe._id || recipe.id} />
+        <Button
+          variant="secondary"
+          onPress={async () => {
             try {
               const data = await apiFetch("/api/payments/create-checkout-session", {
                 method: "POST",
@@ -69,32 +76,32 @@ export function RecipeActions({ recipe }) {
           }}
         >
           <CreditCard size={18} /> Purchase ${recipe.price}
-        </button>
-        <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-red-700 text-white hover:bg-red-800" type="button" onClick={() => setShowReport(true)}>
+        </Button>
+        <Button variant="danger" onPress={() => setShowReport(true)}>
           <Flag size={18} /> Report
-        </button>
+        </Button>
       </div>
       {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300">{message}</p> : null}
       {showReport ? (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-black/55 p-[18px]" role="dialog" aria-modal="true" aria-labelledby="report-title">
           <div className="relative w-full max-w-[460px] rounded-2xl border border-stone-200 bg-white p-6 shadow-2xl dark:border-neutral-700 dark:bg-neutral-900 [&_h2]:m-0 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-bold [&_p]:mb-4 [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
-            <button
-              className="inline-flex size-[42px] items-center justify-center rounded-xl border border-stone-200 bg-white text-stone-800 transition hover:-translate-y-px hover:bg-stone-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800 absolute right-3 top-3"
-              type="button"
-              onClick={() => setShowReport(false)}
+            <Button
+              className="absolute right-3 top-3"
+              variant="tertiary"
+              isIconOnly
               aria-label="Close report modal"
+              onPress={() => setShowReport(false)}
             >
               <Xmark size={18} />
-            </button>
+            </Button>
             <h2 id="report-title">Report recipe</h2>
             <p>Select a reason so admins can review this recipe.</p>
             <div className="grid gap-2.5">
               {["Spam", "Offensive Content", "Copyright Issue"].map((reason) => (
-                <button
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-white text-stone-800 hover:bg-stone-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800"
-                  type="button"
+                <Button
+                  variant="secondary"
                   key={reason}
-                  onClick={async () => {
+                  onPress={async () => {
                     try {
                       await apiFetch(`/api/recipes/${recipe._id || recipe.id}/report`, {
                         method: "POST",
@@ -110,7 +117,7 @@ export function RecipeActions({ recipe }) {
                   }}
                 >
                   {reason}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

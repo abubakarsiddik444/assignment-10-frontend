@@ -1,5 +1,4 @@
-import { RecipeCard } from "@/components/recipes/RecipeCard";
-import { recipes } from "@/lib/data";
+import { FavoriteRecipes } from "@/components/recipes/FavoriteRecipes";
 
 export const metadata = {
   title: "Favorites - RecipeHub",
@@ -12,11 +11,7 @@ export default function FavoritesPage() {
         <span className="mb-3 inline-block text-xs font-extrabold uppercase tracking-[.12em] text-orange-700 dark:text-orange-300">Saved</span>
         <h1>My Favorites</h1>
       </div>
-      <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[660px]:grid-cols-1">
-        {recipes.slice(1, 4).map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
-        ))}
-      </div>
+      <FavoriteRecipes />
     </section>
   );
 }

@@ -16,6 +16,7 @@ export async function apiFetch(path, options = {}) {
       : `/api/backend${path}`;
   const response = await fetch(requestUrl, {
     ...options,
+    cache: options.cache || "no-store",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +26,9 @@ export async function apiFetch(path, options = {}) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    const error = new Error(data.message || "Request failed");
+    error.status = response.status;
+    throw error;
   }
   return data;
 }
@@ -43,6 +46,14 @@ export async function getRecipes(params = {}) {
     let items = fallbackRecipes;
     if (params.featured === "true") items = getFeaturedRecipes();
     if (params.sort === "popular") items = getPopularRecipes();
+    if (params.category) {
+      const selectedCategories = String(params.category).split(",");
+      items = items.filter((recipe) => selectedCategories.includes(recipe.category));
+    }
+    if (params.search) {
+      const search = String(params.search).toLowerCase();
+      items = items.filter((recipe) => recipe.recipeName.toLowerCase().includes(search));
+    }
     return { recipes: items, total: items.length, page: 1, limit: items.length, pages: 1 };
   }
 }

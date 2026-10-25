@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { RecipeFilters } from "@/components/recipes/RecipeFilters";
 import { getRecipes } from "@/lib/api";
 import { categories } from "@/lib/data";
@@ -6,9 +7,12 @@ export const metadata = {
   title: "Browse Recipes - RecipeHub",
 };
 
-export default async function BrowseRecipesPage() {
-  const { recipes } = await getRecipes({ limit: 30 });
+async function BrowseRecipesContent() {
+  const { recipes } = await getRecipes({ limit: 100 });
+  return <RecipeFilters recipes={recipes} categories={categories} />;
+}
 
+export default function BrowseRecipesPage() {
   return (
     <section className="mx-auto w-[calc(100%-2rem)] max-w-[1180px] py-[4.5rem] max-[660px]:w-[calc(100%-1.25rem)]">
       <div className="mb-7 max-w-[720px] pt-5 [&_h1]:m-0 [&_h1]:text-[clamp(2.3rem,7vw,5.8rem)] [&_h1]:leading-none [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300">
@@ -19,7 +23,15 @@ export default async function BrowseRecipesPage() {
           report, or save favorites.
         </p>
       </div>
-      <RecipeFilters recipes={recipes} categories={categories} />
+      <Suspense
+        fallback={
+          <div className="grid min-h-48 place-items-center rounded-2xl border border-stone-200 bg-white text-stone-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-stone-400">
+            Loading recipes...
+          </div>
+        }
+      >
+        <BrowseRecipesContent />
+      </Suspense>
     </section>
   );
 }

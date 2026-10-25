@@ -7,7 +7,7 @@ export const categories = [
   "Seafood",
 ];
 
-export const recipes = [
+const baseRecipes = [
   {
     id: "golden-paneer-bowl",
     recipeName: "Golden Paneer Bowl",
@@ -257,13 +257,102 @@ export const recipes = [
   },
 ];
 
+const additionalRecipeSeed = [
+  ["Smoky Shakshuka Toast", "Breakfast", "Middle Eastern"],
+  ["Cardamom Date Porridge", "Breakfast", "British"],
+  ["Spinach Feta Egg Muffins", "Breakfast", "Greek"],
+  ["Cinnamon Apple French Toast", "Breakfast", "French"],
+  ["Savory Mushroom Breakfast Hash", "Breakfast", "American"],
+  ["Coconut Chia Breakfast Cups", "Breakfast", "Caribbean"],
+  ["Herbed Potato Breakfast Tacos", "Breakfast", "Mexican"],
+  ["Almond Pear Overnight Oats", "Breakfast", "American"],
+  ["Lemon Herb Chicken Pilaf", "Dinner", "Turkish"],
+  ["Slow-Roasted Tomato Gnocchi", "Dinner", "Italian"],
+  ["Ginger Beef Rice Bowls", "Dinner", "Korean"],
+  ["Cumin-Roasted Cauliflower Steaks", "Dinner", "North African"],
+  ["Creamy Tuscan White Beans", "Dinner", "Italian"],
+  ["Sesame Ginger Noodle Bowl", "Dinner", "Chinese"],
+  ["Paprika Chicken with Couscous", "Dinner", "Moroccan"],
+  ["Miso Butter Mushroom Rice", "Dinner", "Japanese"],
+  ["Crispy Potato and Lentil Bake", "Dinner", "Indian"],
+  ["Dark Chocolate Orange Tartlets", "Dessert", "French"],
+  ["Honey Pistachio Yogurt Cake", "Dessert", "Greek"],
+  ["Vanilla Berry Bread Pudding", "Dessert", "American"],
+  ["Brown Butter Peach Crisp", "Dessert", "American"],
+  ["Coconut Lime Rice Pudding", "Dessert", "Thai"],
+  ["Ginger Pear Upside-Down Cake", "Dessert", "British"],
+  ["Strawberry Cardamom Shortcakes", "Dessert", "Indian"],
+  ["Salted Caramel Date Bites", "Dessert", "Middle Eastern"],
+  ["Crispy Tofu Sesame Greens", "Vegan", "Chinese"],
+  ["Roasted Pumpkin Chickpea Stew", "Vegan", "Ethiopian"],
+  ["Lemon Tahini Grain Bowl", "Vegan", "Mediterranean"],
+  ["Spicy Peanut Sweet Potato Noodles", "Vegan", "Thai"],
+  ["Smoky Black Bean Stuffed Peppers", "Vegan", "Mexican"],
+  ["Coconut Spinach Lentil Soup", "Vegan", "Indian"],
+  ["Mushroom Barley Herb Pilaf", "Vegan", "Eastern European"],
+  ["Charred Broccoli Hummus Plate", "Vegan", "Mediterranean"],
+  ["Crispy Fish Taco Sliders", "Street Food", "Mexican"],
+  ["Gochujang Cauliflower Bao", "Street Food", "Korean"],
+  ["Spiced Lamb Pita Pockets", "Street Food", "Lebanese"],
+  ["Crispy Plantain Arepas", "Street Food", "Colombian"],
+  ["Masala Corn Chaat Cups", "Street Food", "Indian"],
+  ["Ginger Chicken Lettuce Wraps", "Street Food", "Chinese"],
+  ["Grilled Halloumi Flatbread", "Street Food", "Cypriot"],
+  ["Tamarind Potato Samosa Chaat", "Street Food", "Indian"],
+  ["Garlic Butter Cod with Greens", "Seafood", "French"],
+  ["Chili Lime Shrimp Skewers", "Seafood", "Mexican"],
+  ["Coconut Curry Mussels", "Seafood", "Thai"],
+  ["Sesame Crusted Tuna Salad", "Seafood", "Japanese"],
+  ["Herbed Salmon with Barley", "Seafood", "Nordic"],
+  ["Saffron Tomato Clam Stew", "Seafood", "Spanish"],
+  ["Crispy Haddock with Pea Mash", "Seafood", "British"],
+  ["Lemon Dill Crab Cakes", "Seafood", "American"],
+  ["Ginger Scallop Rice Noodles", "Seafood", "Vietnamese"],
+].map(([recipeName, category, cuisineType], index) => {
+  const ingredientsByCategory = {
+    Breakfast: ["eggs", "rolled oats", "seasonal fruit", "fresh herbs"],
+    Dinner: ["seasonal vegetables", "whole grains", "aromatic spices", "fresh herbs"],
+    Dessert: ["seasonal fruit", "vanilla", "brown sugar", "lemon zest"],
+    Vegan: ["chickpeas", "leafy greens", "seasonal vegetables", "toasted spices"],
+    "Street Food": ["warm flatbread", "crunchy vegetables", "lime", "chili"],
+    Seafood: ["fresh seafood", "lemon", "olive oil", "garden herbs"],
+  };
+  const imageIds = [
+    "photo-1547592180-85f173990554",
+    "photo-1473093295043-cdd812d0e601",
+    "photo-1512621776951-a57141f2eefd",
+    "photo-1565557623262-b51c2513a641",
+    "photo-1551504734-5ee1c4a1479b",
+    "photo-1467003909585-2f8a72700288",
+  ];
+  return {
+    id: `community-recipe-${String(index + 1).padStart(2, "0")}`,
+    recipeName,
+    recipeImage: `https://images.unsplash.com/${imageIds[index % imageIds.length]}?auto=format&fit=crop&w=1200&q=80`,
+    category,
+    cuisineType,
+    difficultyLevel: index % 3 === 0 ? "Medium" : "Easy",
+    preparationTime: `${20 + (index % 7) * 5} min`,
+    ingredients: ingredientsByCategory[category],
+    instructions: `Prepare ${recipeName.toLowerCase()} by cooking the ingredients until tender and aromatic, then finish with fresh herbs and serve warm.`,
+    authorName: "RecipeHub Community",
+    authorEmail: "community@recipehub.test",
+    likesCount: 0,
+    isFeatured: false,
+    status: "published",
+    price: 2.49 + (index % 6) * 0.5,
+  };
+});
+
+export const recipes = [...baseRecipes, ...additionalRecipeSeed];
+
 export const currentUser = {
   name: "Hasnain Ahmed",
   email: "hasnain@example.com",
   image:
     "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
   role: "user",
-  isPremium: true,
+  isPremium: false,
   isBlocked: false,
 };
 

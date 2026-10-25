@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import {
   Camera,
   Envelope,
@@ -103,7 +103,7 @@ export function AuthForm({ mode }) {
           Name
           <span className="grid min-h-[46px] grid-cols-[auto_1fr] items-center gap-2 rounded-xl border border-stone-200 bg-stone-100 px-3 dark:border-neutral-700 dark:bg-neutral-800 [&_input]:min-h-10 [&_input]:w-full [&_input]:border-0 [&_input]:bg-transparent [&_input]:p-0 [&_input]:text-stone-900 [&_input]:outline-none dark:[&_input]:text-stone-100">
             <Person size={18} />
-            <input name="name" type="text" placeholder="Your name" required />
+            <Input name="name" type="text" placeholder="Your name" required />
           </span>
         </label>
       ) : null}
@@ -111,7 +111,7 @@ export function AuthForm({ mode }) {
         Email
         <span className="grid min-h-[46px] grid-cols-[auto_1fr] items-center gap-2 rounded-xl border border-stone-200 bg-stone-100 px-3 dark:border-neutral-700 dark:bg-neutral-800 [&_input]:min-h-10 [&_input]:w-full [&_input]:border-0 [&_input]:bg-transparent [&_input]:p-0 [&_input]:text-stone-900 [&_input]:outline-none dark:[&_input]:text-stone-100">
           <Envelope size={18} />
-          <input name="email" type="email" placeholder="you@example.com" required />
+          <Input name="email" type="email" placeholder="you@example.com" required />
         </span>
       </label>
       {isRegister ? (
@@ -119,7 +119,7 @@ export function AuthForm({ mode }) {
           Image URL
           <span className="grid min-h-[46px] grid-cols-[auto_1fr] items-center gap-2 rounded-xl border border-stone-200 bg-stone-100 px-3 dark:border-neutral-700 dark:bg-neutral-800 [&_input]:min-h-10 [&_input]:w-full [&_input]:border-0 [&_input]:bg-transparent [&_input]:p-0 [&_input]:text-stone-900 [&_input]:outline-none dark:[&_input]:text-stone-100">
             <Camera size={18} />
-            <input name="image" type="url" placeholder="https://..." />
+            <Input name="image" type="url" placeholder="https://..." />
           </span>
         </label>
       ) : null}
@@ -127,7 +127,7 @@ export function AuthForm({ mode }) {
         Password
         <span className="grid min-h-[46px] grid-cols-[auto_1fr] items-center gap-2 rounded-xl border border-stone-200 bg-stone-100 px-3 dark:border-neutral-700 dark:bg-neutral-800 [&_input]:min-h-10 [&_input]:w-full [&_input]:border-0 [&_input]:bg-transparent [&_input]:p-0 [&_input]:text-stone-900 [&_input]:outline-none dark:[&_input]:text-stone-100">
           <Lock size={18} />
-          <input
+          <Input
             name="password"
             type="password"
             minLength={6}
@@ -141,7 +141,7 @@ export function AuthForm({ mode }) {
         className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
         isDisabled={pending}
         type="submit"
-        variant="solid"
+        variant="primary"
       >
         {pending ? "Please wait..." : isRegister ? "Sign Up" : "Login"}
       </Button>
@@ -149,7 +149,7 @@ export function AuthForm({ mode }) {
         className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-white text-stone-800 hover:bg-stone-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100 dark:hover:bg-neutral-800"
         isDisabled={pending}
         type="button"
-        variant="bordered"
+        variant="secondary"
         onPress={handleGoogleSignIn}
       >
         <Globe size={18} /> Continue with Google

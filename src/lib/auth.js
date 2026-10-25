@@ -6,6 +6,15 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,
   database: mongodbAdapter(authDatabase),
+  user: {
+    additionalFields: {
+      gender: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+    },
+  },
   trustedOrigins: [
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     ...(process.env.NODE_ENV === "development"

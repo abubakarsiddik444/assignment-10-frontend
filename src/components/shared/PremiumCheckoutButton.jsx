@@ -32,7 +32,7 @@ export function PremiumCheckoutButton() {
         className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
         isDisabled={pending}
         type="button"
-        variant="solid"
+        variant="primary"
         onPress={checkout}
       >
         <ShoppingCart width={18} height={18} /> {pending ? "Opening Stripe..." : "Checkout with Stripe"}

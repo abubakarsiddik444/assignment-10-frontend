@@ -1,30 +1,6 @@
-import { createHmac } from "node:crypto";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-
-function createBackendToken(user) {
-  const secret = process.env.JWT_SECRET;
-  if (!secret || secret.length < 32) {
-    throw new Error("JWT_SECRET must contain at least 32 characters.");
-  }
-
-  const now = Math.floor(Date.now() / 1000);
-  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
-  const unsignedToken = `${encode({ alg: "HS256", typ: "JWT" })}.${encode({
-    userId: user.id,
-    email: user.email,
-    name: user.name,
-    image: user.image || "",
-    emailVerified: user.emailVerified === true,
-    iat: now,
-    exp: now + 60 * 60,
-  })}`;
-  const signature = createHmac("sha256", secret)
-    .update(unsignedToken)
-    .digest("base64url");
-
-  return `${unsignedToken}.${signature}`;
-}
+import { createBackendToken } from "@/lib/backend-user";
 
 async function proxyRequest(request, context) {
   const { path } = await context.params;
@@ -71,5 +47,6 @@ async function proxyRequest(request, context) {
 
 export const GET = proxyRequest;
 export const POST = proxyRequest;
+export const PUT = proxyRequest;
 export const PATCH = proxyRequest;
 export const DELETE = proxyRequest;

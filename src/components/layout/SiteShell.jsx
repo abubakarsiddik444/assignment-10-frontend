@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@heroui/react";
 import {
   Camera,
   Comment,
@@ -9,6 +14,9 @@ import {
   Smartphone,
 } from "@gravity-ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
+import { authClient } from "@/lib/auth-client";
+import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,6 +26,58 @@ const navLinks = [
 ];
 
 export function SiteShell({ children }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+  const [signingOut, setSigningOut] = useState(false);
+  const [adminIdentity, setAdminIdentity] = useState(null);
+  const isAdminPath = pathname === "/dashboard/admin" ||
+    pathname.startsWith("/dashboard/admin/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/");
+  const isBrowsePath = pathname === "/recipes" ||
+    pathname.startsWith("/recipes/");
+
+  useEffect(() => {
+    if (!session?.user) return;
+    let active = true;
+    apiFetch("/api/auth/me")
+      .then(({ user }) => {
+        if (active) {
+          setAdminIdentity({
+            id: session.user.id,
+            isAdmin: user?.role === "admin",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Could not resolve the current user's RecipeHub role.", error);
+        if (active) {
+          setAdminIdentity({ id: session.user.id, isAdmin: false });
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [session?.user]);
+
+  const isAdmin = adminIdentity?.id === session?.user?.id && adminIdentity?.isAdmin;
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    try {
+      const result = await authClient.signOut();
+      if (result.error) throw new Error(result.error.message || "Could not sign out.");
+      toast.success("Signed out.");
+      router.refresh();
+    } catch (error) {
+      toast.error(error.message || "Could not sign out.");
+    } finally {
+      setSigningOut(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-neutral-950 dark:text-stone-100">
       <header className="sticky top-4 z-30 mx-auto mt-4 grid w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center gap-5 rounded-2xl border border-stone-200/80 bg-white/90 p-3 shadow-lg backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/90 max-[980px]:grid-cols-1 max-[660px]:mt-2 max-[660px]:w-[calc(100%-1.25rem)]">
@@ -28,20 +88,48 @@ export function SiteShell({ children }) {
           <span>RecipeHub</span>
         </Link>
         <nav className="flex items-center justify-center gap-5 text-sm font-semibold text-stone-600 dark:text-stone-300 max-[980px]:order-last max-[980px]:col-span-full max-[980px]:justify-start max-[980px]:overflow-x-auto max-[980px]:pb-1 [&_a:hover]:text-emerald-800 dark:[&_a:hover]:text-emerald-300" aria-label="Primary navigation">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href}>
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.filter((link) => link.href !== "/dashboard/admin" || isAdmin).map((link) => {
+            const isActive = link.href === "/"
+              ? pathname === "/"
+              : link.href === "/dashboard"
+                ? pathname === "/dashboard" || (pathname.startsWith("/dashboard/") && !isAdminPath)
+                : link.href === "/browse-recipes"
+                  ? pathname === link.href || pathname.startsWith(`${link.href}/`) || isBrowsePath
+                  : isAdminPath;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={isActive ? "page" : undefined}
+                className={isActive ? "rounded-lg bg-emerald-100 px-2.5 py-1.5 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300" : ""}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center justify-end gap-2 max-[660px]:[&>a]:hidden">
           <ThemeToggle />
-          <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-stone-100 text-stone-800 hover:bg-stone-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-100 dark:hover:bg-neutral-700 min-h-9 px-3 text-sm" href="/login">
-            Login
-          </Link>
-          <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300 min-h-9 px-3 text-sm" href="/register">
-            Sign up
-          </Link>
+          {session?.user ? (
+            <Button
+              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-emerald-700 px-3 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-55 dark:bg-emerald-400 dark:text-emerald-950"
+              variant="primary"
+              size="sm"
+              onPress={handleSignOut}
+              isDisabled={signingOut}
+            >
+              {signingOut ? "Signing out..." : "Sign out"}
+            </Button>
+          ) : isPending ? null : (
+            <>
+              <Link className="button button--secondary button--sm" href="/login">
+                Login
+              </Link>
+              <Link className="button button--primary button--sm" href="/register">
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </header>
       <main className="flex-1">{children}</main>

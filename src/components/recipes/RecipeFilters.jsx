@@ -1,6 +1,7 @@
 "use client";
 
 import { Magnifier } from "@gravity-ui/icons";
+import { Button, Input, Pagination } from "@heroui/react";
 import { useMemo, useState } from "react";
 import { RecipeCard } from "./RecipeCard";
 
@@ -8,7 +9,7 @@ export function RecipeFilters({ recipes, categories }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [page, setPage] = useState(1);
-  const pageSize = 3;
+  const pageSize = 12;
 
   const filteredRecipes = useMemo(() => {
     return recipes.filter((recipe) => {
@@ -23,73 +24,89 @@ export function RecipeFilters({ recipes, categories }) {
   const visibleRecipes = filteredRecipes.slice((safePage - 1) * pageSize, safePage * pageSize);
 
   return (
-    <div className="grid grid-cols-[280px_minmax(0,1fr)] items-start gap-6 max-[980px]:grid-cols-1">
-      <aside className="sticky top-[100px] rounded-2xl border border-stone-200 bg-white p-[22px] shadow-md dark:border-neutral-800 dark:bg-neutral-900 max-[980px]:static [&_label]:mb-2 [&_select]:my-2 [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-stone-200 [&_select]:bg-stone-100 [&_select]:px-3 [&_select]:py-2.5 [&_select]:text-stone-900 dark:[&_select]:border-neutral-700 dark:[&_select]:bg-neutral-800 dark:[&_select]:text-stone-100">
-        <label className="grid gap-2 font-bold text-stone-800 dark:text-stone-100" htmlFor="recipe-search">
-          Search
+    <div>
+      <div className="mb-7 grid grid-cols-[minmax(240px,1fr)_minmax(180px,260px)] items-end gap-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 max-[660px]:grid-cols-1">
+        <label className="grid gap-2 font-semibold text-stone-700 dark:text-stone-200" htmlFor="recipe-search">
+          Search recipes
+          <div className="relative">
+            <Magnifier className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" size={18} />
+            <Input
+              className="h-11 w-full pl-10"
+              id="recipe-search"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+              placeholder="Search by recipe name"
+              aria-label="Search recipes"
+            />
+          </div>
         </label>
-        <div className="grid min-h-[46px] grid-cols-[auto_1fr] items-center gap-2 rounded-xl border border-stone-200 bg-stone-100 px-3 dark:border-neutral-700 dark:bg-neutral-800 [&_input]:min-h-10 [&_input]:w-full [&_input]:border-0 [&_input]:bg-transparent [&_input]:p-0 [&_input]:text-stone-900 [&_input]:outline-none dark:[&_input]:text-stone-100">
-          <Magnifier size={18} />
-          <input
-            id="recipe-search"
-            value={query}
+        <label className="grid gap-2 font-semibold text-stone-700 dark:text-stone-200" htmlFor="category-filter">
+          Category
+          <select
+            className="h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-stone-900 outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-stone-100"
+            id="category-filter"
+            value={category}
             onChange={(event) => {
-              setQuery(event.target.value);
+              setCategory(event.target.value);
               setPage(1);
             }}
-            placeholder="Search recipes"
-          />
-        </div>
-        <label className="grid gap-2 font-bold text-stone-800 dark:text-stone-100" htmlFor="category-filter">
-          Category
+          >
+            <option>All</option>
+            {categories.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </select>
         </label>
-        <select
-          id="category-filter"
-          value={category}
-          onChange={(event) => {
-            setCategory(event.target.value);
-            setPage(1);
-          }}
-        >
-          <option>All</option>
-          {categories.map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-        </select>
-        <p className="text-sm leading-[1.6] text-stone-500 dark:text-stone-400 [&_a]:text-emerald-800 dark:[&_a]:text-emerald-300">
-          Backend-ready filter: category values map directly to MongoDB $in queries.
-        </p>
-      </aside>
+      </div>
       <div>
         <div className="mb-[18px] flex items-center justify-between text-stone-500 dark:text-stone-400 max-[660px]:flex-col max-[660px]:items-start">
-          <strong>{filteredRecipes.length} recipes</strong>
-          <span>
-            Page {safePage} of {pageCount}
-          </span>
+          <strong>
+            Showing {filteredRecipes.length ? (safePage - 1) * pageSize + 1 : 0}-
+            {Math.min(safePage * pageSize, filteredRecipes.length)} of {filteredRecipes.length} recipes
+          </strong>
+          <span>Page {safePage} of {pageCount}</span>
         </div>
-        <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[660px]:grid-cols-1">
+        <div className="grid grid-cols-4 gap-5 max-[1100px]:grid-cols-3 max-[800px]:grid-cols-2 max-[560px]:grid-cols-1">
           {visibleRecipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
+            <RecipeCard key={recipe.id || recipe._id || recipe.recipeName} recipe={recipe} />
           ))}
         </div>
-        <div className="mt-5 flex items-center justify-end gap-2.5 text-stone-500 dark:text-stone-400 max-[660px]:flex-col max-[660px]:items-start" aria-label="Recipe pagination">
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-stone-100 text-stone-800 hover:bg-stone-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-100 dark:hover:bg-neutral-700"
-            type="button"
-            onClick={() => setPage((current) => Math.max(1, current - 1))}
-            disabled={safePage === 1}
-          >
-            Previous
-          </button>
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-stone-100 text-stone-800 hover:bg-stone-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-100 dark:hover:bg-neutral-700"
-            type="button"
-            onClick={() => setPage((current) => Math.min(pageCount, current + 1))}
-            disabled={safePage === pageCount}
-          >
-            Next
-          </button>
-        </div>
+        {visibleRecipes.length === 0 ? (
+          <p className="mt-5 text-stone-600 dark:text-stone-300">No recipes match your search.</p>
+        ) : null}
+        <Pagination className="mt-6 justify-center" aria-label="Recipe pagination">
+          <Pagination.Content>
+            <Pagination.Item>
+              <Pagination.Previous
+                onPress={() => setPage((current) => Math.max(1, current - 1))}
+                isDisabled={safePage === 1}
+              >
+                Previous
+              </Pagination.Previous>
+            </Pagination.Item>
+            {Array.from({ length: pageCount }, (_, index) => index + 1).map((pageNumber) => (
+              <Pagination.Item key={pageNumber}>
+                <Pagination.Link
+                  isActive={safePage === pageNumber}
+                  onPress={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </Pagination.Link>
+              </Pagination.Item>
+            ))}
+            <Pagination.Item>
+              <Pagination.Next
+                onPress={() => setPage((current) => Math.min(pageCount, current + 1))}
+                isDisabled={safePage === pageCount}
+              >
+                Next
+              </Pagination.Next>
+            </Pagination.Item>
+          </Pagination.Content>
+        </Pagination>
       </div>
     </div>
   );

@@ -22,10 +22,14 @@ keys in a `NEXT_PUBLIC_*` variable or the frontend environment.
 The frontend needs `NEXT_PUBLIC_API_BASE_URL` (for local development:
 `http://localhost:5000`), `MONGODB_URI`, `DB_NAME`, `JWT_SECRET`,
 `BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL`. The backend needs the same
-`MONGODB_URI` and `JWT_SECRET`, plus `CLIENT_ORIGIN` and `STRIPE_SECRET_KEY`.
+`MONGODB_URI` and `JWT_SECRET`, plus `CLIENT_ORIGIN` and `STRIPE_SECRET_KEY`
+to create Stripe Checkout sessions.
 Use `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Better Auth Google sign-in.
 `NEXT_PUBLIC_IMGBB_API_KEY` is used by browser image uploads and
-`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is safe to expose to the browser.
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is safe to expose to the browser. The
+current hosted Checkout redirect uses inline prices and only needs the Stripe
+secret key in the backend; a publishable key or Stripe Price IDs are not
+required.
 Generate `JWT_SECRET` and `BETTER_AUTH_SECRET` yourself (for example,
 `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`).
 Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the backend environment only if you
@@ -47,7 +51,10 @@ The frontend and backend must use the same working MongoDB URI. If either
 server reports `bad auth: Authentication failed`, reset the Atlas Database
 Access user's password, update `MONGODB_URI` in both private environment files,
 and restart both servers. Stripe Checkout additionally needs `STRIPE_SECRET_KEY`
-in the backend environment.
+in the backend environment. Use a Stripe test-mode secret key while testing;
+never paste the key into chat or commit it. The current payment confirmation
+retrieves the Checkout session from Stripe after redirect, so a webhook signing
+secret is not required for this flow.
 Both environment examples use the `assignment-10` database by default.
 If a live key or database password is pasted into chat or another shared
 location, rotate it in its provider dashboard and update the private `.env`
