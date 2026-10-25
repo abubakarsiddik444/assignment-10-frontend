@@ -6,6 +6,8 @@ import { RecipeActions } from "@/components/recipes/RecipeActions";
 import { getRecipe } from "@/lib/api";
 import { getRecipeById, recipes } from "@/lib/data";
 
+export const instant = false;
+
 export function generateStaticParams() {
   return recipes.map((recipe) => ({ id: recipe.id }));
 }
