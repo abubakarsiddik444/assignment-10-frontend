@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@heroui/react";
+import { Button, Link } from "@heroui/react";
 import {
   Camera,
   Comment,
@@ -81,7 +80,7 @@ export function SiteShell({ children }) {
   return (
     <div className="flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-neutral-950 dark:text-stone-100">
       <header className="sticky top-4 z-30 mx-auto mt-4 grid w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center gap-5 rounded-2xl border border-stone-200/80 bg-white/90 p-3 shadow-lg backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/90 max-[980px]:grid-cols-1 max-[660px]:mt-2 max-[660px]:w-[calc(100%-1.25rem)]">
-        <Link className="inline-flex items-center gap-2.5 text-base font-extrabold tracking-tight" href="/" aria-label="RecipeHub home">
+        <Link className="inline-flex items-center gap-2.5 text-base font-extrabold tracking-tight no-underline" href="/" aria-label="RecipeHub home">
           <span className="inline-grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
             <Cup size={21} />
           </span>
@@ -136,7 +135,7 @@ export function SiteShell({ children }) {
       <footer className="mt-10 border-t border-stone-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 [&_p]:leading-7 [&_p]:text-stone-600 dark:[&_p]:text-stone-300 [&_a:hover]:text-emerald-800 dark:[&_a:hover]:text-emerald-300">
         <div className="mx-auto grid w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[1.3fr_.7fr_1fr_.6fr] gap-7 py-[42px] max-[980px]:grid-cols-1 max-[660px]:w-[calc(100%-1.25rem)] [&>div]:grid [&>div]:content-start [&>div]:gap-2 [&_h3]:mb-3 [&_h3]:mt-0 [&_h3]:text-base [&_h3]:font-bold">
           <div>
-            <Link className="inline-flex items-center gap-2.5 text-base font-extrabold tracking-tight w-fit" href="/">
+            <Link className="inline-flex items-center gap-2.5 text-base font-extrabold tracking-tight no-underline w-fit" href="/">
               <span className="inline-grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                 <Cup size={21} />
               </span>

@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 
 export function DashboardNav({ items }) {
   const pathname = usePathname();

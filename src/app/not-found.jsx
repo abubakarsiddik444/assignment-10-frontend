@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { Cup } from "@gravity-ui/icons";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 
 export default function NotFound() {
   return (
@@ -11,7 +10,7 @@ export default function NotFound() {
       </Card>
       <h1>Recipe not found</h1>
       <p>The page you requested may have moved, expired, or never made it out of the kitchen.</p>
-      <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300" href="/">
+      <Link className="button button--primary button--lg" href="/">
         Back Home
       </Link>
     </section>

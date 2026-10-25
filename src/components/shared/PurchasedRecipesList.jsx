@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 

@@ -1,7 +1,6 @@
-import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, FileArrowUp, Flame, ShieldCheck } from "@gravity-ui/icons";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 import { MotionFeature } from "@/components/recipes/MotionFeature";
 import { RecipeCard } from "@/components/recipes/RecipeCard";
 import { getRecipes } from "@/lib/api";
@@ -24,10 +23,10 @@ export default async function Home() {
             polished community kitchen built for food lovers and creators.
           </p>
           <div className="flex flex-wrap items-center gap-3 max-[660px]:[&>a]:w-full">
-            <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 bg-emerald-700 text-white hover:bg-emerald-800 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300" href="/browse-recipes">
+            <Link className="button button--primary button--lg" href="/browse-recipes">
               Browse Recipes <ArrowRight size={18} />
             </Link>
-            <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 font-bold transition duration-150 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-55 border-stone-200 bg-stone-100 text-stone-800 hover:bg-stone-200 dark:border-neutral-700 dark:bg-neutral-800 dark:text-stone-100 dark:hover:bg-neutral-700" href="/dashboard/add-recipe">
+            <Link className="button button--secondary button--lg" href="/dashboard/add-recipe">
               Add Recipe
             </Link>
           </div>

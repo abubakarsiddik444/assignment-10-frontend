@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { recipes } from "@/lib/data";
-import { Button, Card } from "@heroui/react";
+import { Button, Card, Link } from "@heroui/react";
 
 export const metadata = {
   title: "Manage Recipes - RecipeHub",

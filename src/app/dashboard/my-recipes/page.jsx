@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { Pencil, TrashBin } from "@gravity-ui/icons";
 import { recipes } from "@/lib/data";
-import { Button, Card } from "@heroui/react";
+import { Button, Card, Link } from "@heroui/react";
 
 export const metadata = {
   title: "My Recipes - RecipeHub",

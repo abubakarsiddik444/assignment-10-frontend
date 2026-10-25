@@ -1,7 +1,6 @@
-import Link from "next/link";
 import Image from "next/image";
 import { Clock, Heart, Star } from "@gravity-ui/icons";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 import { RecipeFavoriteButton } from "./RecipeFavoriteButton";
 
 export function RecipeCard({ recipe, initialFavorite, onFavoriteChange }) {

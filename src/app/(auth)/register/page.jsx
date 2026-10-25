@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Card } from "@heroui/react";
+import { Card, Link } from "@heroui/react";
 import { AuthForm } from "@/components/shared/AuthForm";
 
 export const metadata = {
