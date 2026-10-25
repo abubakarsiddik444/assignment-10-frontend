@@ -1,30 +1,50 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useSyncExternalStore,
+} from "react";
 
 const ThemeContext = createContext(null);
+let currentTheme = "light";
+const listeners = new Set();
+
+function subscribe(listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function getTheme() {
+  return currentTheme;
+}
+
+function updateTheme(theme) {
+  if (currentTheme === theme) return;
+  currentTheme = theme;
+  document.documentElement.dataset.theme = theme;
+  window.localStorage.setItem("recipehub-theme", theme);
+  listeners.forEach((listener) => listener());
+}
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") {
-      return "light";
-    }
-    const storedTheme = window.localStorage.getItem("recipehub-theme");
-    return (
-      storedTheme ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-    );
-  });
+  const theme = useSyncExternalStore(subscribe, getTheme, () => "light");
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("recipehub-theme", theme);
-  }, [theme]);
+    const storedTheme = window.localStorage.getItem("recipehub-theme");
+    const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const resolvedTheme = storedTheme || preferredTheme;
+    currentTheme = resolvedTheme;
+    document.documentElement.dataset.theme = resolvedTheme;
+    listeners.forEach((listener) => listener());
+  }, []);
 
   const value = useMemo(
     () => ({
       theme,
-      toggleTheme: () => setTheme((current) => (current === "dark" ? "light" : "dark")),
+      toggleTheme: () => updateTheme(theme === "dark" ? "light" : "dark"),
     }),
     [theme],
   );

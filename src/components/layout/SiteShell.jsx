@@ -27,9 +27,9 @@ const navLinks = [
 export function SiteShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
+  const [currentUser, setCurrentUser] = useState(null);
+  const [sessionPending, setSessionPending] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
-  const [adminIdentity, setAdminIdentity] = useState(null);
   const isAdminPath = pathname === "/dashboard/admin" ||
     pathname.startsWith("/dashboard/admin/") ||
     pathname === "/admin" ||
@@ -38,36 +38,32 @@ export function SiteShell({ children }) {
     pathname.startsWith("/recipes/");
 
   useEffect(() => {
-    if (!session?.user) return;
     let active = true;
     apiFetch("/api/auth/me")
       .then(({ user }) => {
-        if (active) {
-          setAdminIdentity({
-            id: session.user.id,
-            isAdmin: user?.role === "admin",
-          });
-        }
+        if (active) setCurrentUser(user || null);
       })
       .catch((error) => {
-        console.error("Could not resolve the current user's RecipeHub role.", error);
-        if (active) {
-          setAdminIdentity({ id: session.user.id, isAdmin: false });
-        }
+        console.error("Could not resolve the current user.", error);
+        if (active) setCurrentUser(null);
+      })
+      .finally(() => {
+        if (active) setSessionPending(false);
       });
 
     return () => {
       active = false;
     };
-  }, [session?.user]);
+  }, [pathname]);
 
-  const isAdmin = adminIdentity?.id === session?.user?.id && adminIdentity?.isAdmin;
+  const isAdmin = currentUser?.role === "admin";
 
   async function handleSignOut() {
     setSigningOut(true);
     try {
       const result = await authClient.signOut();
       if (result.error) throw new Error(result.error.message || "Could not sign out.");
+      setCurrentUser(null);
       toast.success("Signed out.");
       router.refresh();
     } catch (error) {
@@ -109,7 +105,7 @@ export function SiteShell({ children }) {
         </nav>
         <div className="flex items-center justify-end gap-2 max-[660px]:[&>a]:hidden">
           <ThemeToggle />
-          {session?.user ? (
+          {currentUser ? (
             <Button
               className="inline-flex min-h-9 items-center justify-center rounded-xl bg-emerald-700 px-3 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-55 dark:bg-emerald-400 dark:text-emerald-950"
               variant="primary"
@@ -119,7 +115,7 @@ export function SiteShell({ children }) {
             >
               {signingOut ? "Signing out..." : "Sign out"}
             </Button>
-          ) : isPending ? null : (
+          ) : sessionPending ? null : (
             <>
               <Link className="button button--secondary button--sm" href="/login">
                 Login
