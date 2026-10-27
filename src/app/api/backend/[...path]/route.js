@@ -30,12 +30,24 @@ async function proxyRequest(request, context) {
     request.method === "GET" || request.method === "HEAD"
       ? undefined
       : await request.arrayBuffer();
-  const response = await fetch(targetUrl, {
-    method: request.method,
-    headers,
-    body,
-    cache: "no-store",
-  });
+  let response;
+  try {
+    response = await fetch(targetUrl, {
+      method: request.method,
+      headers,
+      body,
+      cache: "no-store",
+    });
+  } catch (error) {
+    console.error("Could not reach the RecipeHub API backend.", error);
+    return NextResponse.json(
+      {
+        message:
+          "RecipeHub API is unavailable. Start the backend with `npm run dev` from the backend project folder.",
+      },
+      { status: 503 },
+    );
+  }
 
   return new NextResponse(response.body, {
     status: response.status,

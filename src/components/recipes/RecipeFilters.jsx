@@ -84,7 +84,10 @@ export function RecipeFilters({ recipes, categories }) {
         {visibleRecipes.length === 0 ? (
           <p className="mt-5 text-stone-600 dark:text-stone-300">No recipes match your search.</p>
         ) : null}
-        <Pagination className="mt-6 justify-center" aria-label="Recipe pagination">
+        <Pagination
+          className="mt-6 w-full max-w-full justify-center overflow-x-auto"
+          aria-label="Recipe pagination"
+        >
           <Pagination.Content>
             <Pagination.Item>
               <Pagination.Previous

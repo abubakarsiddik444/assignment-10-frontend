@@ -3,6 +3,7 @@
 import { Button, Card, Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { ConfirmActionModal } from "@/components/shared/ConfirmActionModal";
 import toast from "react-hot-toast";
 
 export function AdminReportsManager() {
@@ -42,8 +43,10 @@ export function AdminReportsManager() {
           : item
       ));
       toast.success(removeRecipe ? "Recipe removed and report resolved." : "Report dismissed.");
+      return true;
     } catch (requestError) {
       toast.error(requestError.message || "Could not resolve this report.");
+      return false;
     } finally {
       setWorkingId("");
     }
@@ -71,7 +74,17 @@ export function AdminReportsManager() {
                   <td>
                     {pending ? (
                       <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="danger" isDisabled={workingId === id} onPress={() => resolveReport(report, true)}>Remove Recipe</Button>
+                        <ConfirmActionModal
+                          title="Remove this recipe?"
+                          description={`"${report.recipeName || "This recipe"}" will be removed from the site and the report will be marked as resolved.`}
+                          confirmLabel="Remove Recipe"
+                          pendingLabel="Removing..."
+                          onConfirm={() => resolveReport(report, true)}
+                        >
+                          <Button size="sm" variant="danger" isDisabled={workingId === id}>
+                            Remove Recipe
+                          </Button>
+                        </ConfirmActionModal>
                         <Button size="sm" variant="secondary" isDisabled={workingId === id} onPress={() => resolveReport(report, false)}>Dismiss</Button>
                       </div>
                     ) : "Reviewed"}

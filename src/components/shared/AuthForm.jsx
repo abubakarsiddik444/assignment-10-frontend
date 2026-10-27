@@ -4,28 +4,20 @@ import { Button, Input } from "@heroui/react";
 import {
   Camera,
   Envelope,
-  Globe,
   Lock,
   Person,
 } from "@gravity-ui/icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 import { apiFetch } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export function AuthForm({ mode }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
   const isRegister = mode === "register";
-
-  function getRedirectPath() {
-    const nextPath = searchParams.get("next");
-    return nextPath?.startsWith("/") && !nextPath.startsWith("//")
-      ? nextPath
-      : "/dashboard";
-  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -57,10 +49,10 @@ export function AuthForm({ mode }) {
         );
       }
 
-      let destination = getRedirectPath();
+      let destination = "/";
       try {
         const { user } = await apiFetch("/api/auth/me");
-        if (!searchParams.get("next") && user?.role === "admin") {
+        if (user?.role === "admin") {
           destination = "/dashboard/admin";
         }
       } catch (error) {
@@ -68,7 +60,7 @@ export function AuthForm({ mode }) {
       }
 
       toast.success(isRegister ? "Your account is ready!" : "Welcome back!");
-      router.push(destination);
+      router.replace(destination);
       router.refresh();
     } catch (error) {
       toast.error(error.message || "Could not authenticate. Please try again.");
@@ -80,7 +72,7 @@ export function AuthForm({ mode }) {
   async function handleGoogleSignIn() {
     setPending(true);
     try {
-      const callbackURL = new URL(getRedirectPath(), window.location.origin).toString();
+      const callbackURL = new URL("/", window.location.origin).toString();
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL,
@@ -152,7 +144,7 @@ export function AuthForm({ mode }) {
         variant="secondary"
         onPress={handleGoogleSignIn}
       >
-        <Globe size={18} /> Continue with Google
+        <FcGoogle aria-hidden="true" size={20} /> Continue with Google
       </Button>
     </form>
   );

@@ -3,12 +3,10 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, Link } from "@heroui/react";
+import { FaFacebookF, FaGithub, FaLinkedinIn } from "react-icons/fa";
 import {
-  Camera,
-  Comment,
   Cup,
   Envelope,
-  Globe,
   MapPin,
   Smartphone,
 } from "@gravity-ui/icons";
@@ -30,6 +28,7 @@ export function SiteShell({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [sessionPending, setSessionPending] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const isAdminPath = pathname === "/dashboard/admin" ||
     pathname.startsWith("/dashboard/admin/") ||
     pathname === "/admin" ||
@@ -75,14 +74,18 @@ export function SiteShell({ children }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-neutral-950 dark:text-stone-100">
-      <header className="sticky top-4 z-30 mx-auto mt-4 grid w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center gap-5 rounded-2xl border border-stone-200/80 bg-white/90 p-3 shadow-lg backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/90 max-[980px]:grid-cols-1 max-[660px]:mt-2 max-[660px]:w-[calc(100%-1.25rem)]">
+      <header className="sticky top-4 z-30 mx-auto mt-4 grid w-[calc(100%-2rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center gap-5 rounded-2xl border border-stone-200/80 bg-white/90 p-3 shadow-lg backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/90 max-[980px]:grid-cols-[1fr_auto] max-[980px]:gap-3 max-[660px]:mt-2 max-[660px]:w-[calc(100%-1.25rem)]">
         <Link className="inline-flex items-center gap-2.5 text-base font-extrabold tracking-tight no-underline" href="/" aria-label="RecipeHub home">
           <span className="inline-grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
             <Cup size={21} />
           </span>
           <span>RecipeHub</span>
         </Link>
-        <nav className="flex items-center justify-center gap-5 text-sm font-semibold text-stone-600 dark:text-stone-300 max-[980px]:order-last max-[980px]:col-span-full max-[980px]:justify-start max-[980px]:overflow-x-auto max-[980px]:pb-1 [&_a:hover]:text-emerald-800 dark:[&_a:hover]:text-emerald-300" aria-label="Primary navigation">
+        <nav
+          id="primary-navigation"
+          className={`flex min-w-0 items-center justify-center gap-5 text-sm font-semibold text-stone-600 dark:text-stone-300 max-[980px]:order-last max-[980px]:col-span-full max-[980px]:w-full max-[980px]:flex-col max-[980px]:items-stretch max-[980px]:justify-start max-[980px]:gap-1 max-[980px]:border-t max-[980px]:border-stone-200 max-[980px]:pt-3 max-[980px]:dark:border-neutral-700 min-[981px]:flex [&_a:hover]:text-emerald-800 dark:[&_a:hover]:text-emerald-300 ${menuOpen ? "max-[980px]:flex" : "max-[980px]:hidden"}`}
+          aria-label="Primary navigation"
+        >
           {navLinks.filter((link) => link.href !== "/dashboard/admin" || isAdmin).map((link) => {
             const isActive = link.href === "/"
               ? pathname === "/"
@@ -96,18 +99,53 @@ export function SiteShell({ children }) {
                 key={link.href}
                 href={link.href}
                 aria-current={isActive ? "page" : undefined}
+                onPress={() => setMenuOpen(false)}
                 className={isActive ? "rounded-lg bg-emerald-100 px-2.5 py-1.5 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300" : ""}
               >
                 {link.label}
               </Link>
             );
           })}
-        </nav>
-        <div className="flex items-center justify-end gap-2 max-[660px]:[&>a]:hidden">
-          <ThemeToggle />
           {currentUser ? (
             <Button
-              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-emerald-700 px-3 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-55 dark:bg-emerald-400 dark:text-emerald-950"
+              className="hidden max-[980px]:inline-flex"
+              variant="secondary"
+              isDisabled={signingOut}
+              onPress={handleSignOut}
+            >
+              {signingOut ? "Signing out..." : "Sign out"}
+            </Button>
+          ) : !sessionPending ? (
+            <>
+              <Link className="hidden max-[980px]:flex max-[980px]:min-h-10 max-[980px]:items-center" href="/login" onPress={() => setMenuOpen(false)}>
+                Login
+              </Link>
+              <Link className="hidden max-[980px]:flex max-[980px]:min-h-10 max-[980px]:items-center" href="/register" onPress={() => setMenuOpen(false)}>
+                Sign up
+              </Link>
+            </>
+          ) : null}
+        </nav>
+        <div className="flex items-center justify-end gap-2 max-[980px]:order-2">
+          <ThemeToggle />
+          <Button
+            className="hidden max-[980px]:inline-flex"
+            variant="secondary"
+            isIconOnly
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="primary-navigation"
+            onPress={() => setMenuOpen((isOpen) => !isOpen)}
+          >
+            <span aria-hidden="true" className="grid gap-1">
+              <span className="size-1 rounded-full bg-current" />
+              <span className="size-1 rounded-full bg-current" />
+              <span className="size-1 rounded-full bg-current" />
+            </span>
+          </Button>
+          {currentUser ? (
+            <Button
+              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-emerald-700 px-3 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-55 dark:bg-emerald-400 dark:text-emerald-950 max-[980px]:hidden"
               variant="primary"
               size="sm"
               onPress={handleSignOut}
@@ -117,10 +155,10 @@ export function SiteShell({ children }) {
             </Button>
           ) : sessionPending ? null : (
             <>
-              <Link className="button button--secondary button--sm" href="/login">
+              <Link className="button button--secondary button--sm max-[980px]:hidden" href="/login">
                 Login
               </Link>
-              <Link className="button button--primary button--sm" href="/register">
+              <Link className="button button--primary button--sm max-[980px]:hidden" href="/register">
                 Sign up
               </Link>
             </>
@@ -163,15 +201,36 @@ export function SiteShell({ children }) {
           </div>
           <div>
             <h3>Social</h3>
-            <div className="flex gap-2.5 [&_a]:grid [&_a]:size-[38px] [&_a]:place-items-center [&_a]:rounded-xl [&_a]:border [&_a]:border-stone-200 dark:[&_a]:border-neutral-700" aria-label="Social links">
-              <Link href="#" aria-label="Facebook">
-                <Globe size={18} />
+            <div className="flex flex-wrap gap-2.5 [&_a]:rounded-xl [&_a]:border [&_a]:border-stone-200 [&_a]:px-3 [&_a]:py-2 [&_a]:text-sm [&_a]:font-semibold dark:[&_a]:border-neutral-700" aria-label="Social links">
+              <Link
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className="inline-flex items-center gap-2"
+              >
+                <FaFacebookF aria-hidden="true" size={16} />
+                Facebook
               </Link>
-              <Link href="#" aria-label="Instagram">
-                <Camera size={18} />
+              <Link
+                href="https://www.linkedin.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+                className="inline-flex items-center gap-2"
+              >
+                <FaLinkedinIn aria-hidden="true" size={16} />
+                LinkedIn
               </Link>
-              <Link href="#" aria-label="Twitter">
-                <Comment size={18} />
+              <Link
+                href="https://github.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+                className="inline-flex items-center gap-2"
+              >
+                <FaGithub aria-hidden="true" size={16} />
+                GitHub
               </Link>
             </div>
           </div>

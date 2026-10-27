@@ -20,7 +20,10 @@ export function DashboardNav({ items }) {
     <Card className="sticky top-[100px] p-[18px] max-[980px]:static [&_h2]:mb-3.5 [&_h2]:mt-0 [&_h2]:text-base [&_nav]:grid [&_nav]:gap-2 [&_a]:flex [&_a]:min-h-10 [&_a]:items-center [&_a]:rounded-xl [&_a]:px-3 [&_a]:font-bold [&_a]:text-stone-500 [&_a:hover]:bg-stone-100 [&_a:hover]:text-stone-900 dark:[&_a]:text-stone-400 dark:[&_a:hover]:bg-neutral-800 dark:[&_a:hover]:text-stone-100">
       <Card.Content className="p-0">
       <h2>{isAdminWorkspace ? "Admin Workspace" : "Workspace"}</h2>
-      <nav aria-label={isAdminWorkspace ? "Admin navigation" : "Dashboard navigation"}>
+      <nav
+        className="grid gap-2 max-[660px]:flex max-[660px]:overflow-x-auto max-[660px]:pb-1 [&_a]:shrink-0"
+        aria-label={isAdminWorkspace ? "Admin navigation" : "Dashboard navigation"}
+      >
         {visibleItems.map((item) => (
           <Link
             key={item.href}

@@ -19,7 +19,7 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 - Next.js 16 App Router
 - Better Auth with MongoDB
 - Express API with JWT bearer verification
-- HeroUI, Gravity UI Icons, and React Hot Toast
+- HeroUI, Gravity UI Icons, React Icons, and React Hot Toast
 - Tailwind CSS 4 utility classes for all application styling
 - Framer Motion
 
@@ -32,14 +32,16 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 - Like a recipe once per signed-in account, add or remove favorites, and report recipes.
 - View recipe images, ingredients, instructions, preparation time, difficulty, and author.
 - Switch between light and dark themes.
+- Open responsive navigation from the three-dot mobile menu and visit Facebook, LinkedIn, or GitHub from the footer.
 
 ### Account and dashboard features
 
 - Register or sign in with email and password; Google sign-in is available when configured.
 - Sign out, view and update profile details, and display profile image and gender.
 - View personal dashboard totals for recipes, favorites, likes, and Premium status.
-- Create, edit, and delete your own recipes.
-- Publish up to 3 recipes on a free account; Premium accounts can publish without this limit.
+- Submit recipes for admin approval, then edit or delete your own submissions.
+- Free accounts can keep up to 3 non-deleted recipes, including pending and
+  rejected submissions; Premium accounts have no submission limit.
 - View purchased recipes and payment confirmation status.
 
 ### Premium and payments
@@ -52,6 +54,7 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 
 - Restrict the admin workspace and admin API actions to administrator accounts.
 - View admin dashboard totals and transactions.
+- Review, approve, or reject recipes before they appear in public listings.
 - Assign or remove admin roles and block or unblock accounts.
 - Feature or unfeature recipes, remove recipes, and review, dismiss, or remove reported content.
 
@@ -61,53 +64,80 @@ RecipeHub is a recipe sharing platform frontend built with Next.js 16. It covers
 - Show loading, empty, success, and error states for data-driven dashboard and payment views.
 - Use HeroUI components, Gravity UI icons, toast notifications, and Framer Motion effects.
 
+## How the app works
+
+The Next.js app handles pages, Better Auth sessions, and the same-origin
+`/api/backend/*` proxy. The Express API handles recipe and account data, admin
+actions, and Stripe Checkout. MongoDB is shared by the services. The proxy
+converts the signed-in Better Auth user into a short-lived backend JWT, so
+browser requests do not need a MongoDB or JWT secret.
+
+Regular users' new or edited recipes stay pending and are hidden from public
+search until an admin approves them. Admin submissions can publish directly.
+Free users can keep up to three non-deleted recipes; Premium members have no
+submission limit.
+
+## API connection
+
+The browser sends API calls to the Next.js route `/api/backend/*`. The proxy
+forwards them to `NEXT_PUBLIC_API_BASE_URL` and attaches authentication when
+available. The backend defaults to `http://localhost:5000`; its `CLIENT_ORIGIN`
+must allow the frontend origin. The frontend and backend must use the same
+`MONGODB_URI` and `JWT_SECRET`.
+
+Key backend routes include:
+
+- `/health` for MongoDB readiness.
+- `/api/recipes` for public, approved recipe search and filtering.
+- `/api/recipes/:id` for details and owner-managed submissions.
+- `/api/dashboard/overview` and `/api/favorites` for user dashboard data.
+- `/api/payments/*` for Stripe Checkout and payment confirmation.
+- `/api/admin/*` for admin-only management and moderation.
+
 ## Environment
 
-Keep frontend and backend environment variables separate. Copy the examples to
-`.env.local` in the frontend and `.env` in the backend. Never put database
-credentials, JWT/Better Auth secrets, Google client secrets, or Stripe secret
-keys in a `NEXT_PUBLIC_*` variable or the frontend environment.
+Create private environment files yourself; this repository does not include
+`.env.example` files. Use `.env.local` in the frontend and `.env` in the
+backend. Never commit either file.
 
-The frontend needs `NEXT_PUBLIC_API_BASE_URL` (for local development:
-`http://localhost:5000`), `MONGODB_URI`, `DB_NAME`, `JWT_SECRET`,
-`BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL`. The backend needs the same
-`MONGODB_URI` and `JWT_SECRET`, plus `CLIENT_ORIGIN` and `STRIPE_SECRET_KEY`
-to create Stripe Checkout sessions.
-Use `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Better Auth Google sign-in.
-`NEXT_PUBLIC_IMGBB_API_KEY` is used by browser image uploads and
-`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is safe to expose to the browser. The
-current hosted Checkout redirect uses inline prices and only needs the Stripe
-secret key in the backend; a publishable key or Stripe Price IDs are not
-required.
-Generate `JWT_SECRET` and `BETTER_AUTH_SECRET` yourself (for example,
-`node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`).
-Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the backend environment only if you
-want the API to create an initial administrator. Use a unique, strong password.
-For Google OAuth, register `http://localhost:3000/api/auth/callback/google`
-as a development redirect URI and the matching callback URL for your deployed
-frontend.
+Frontend server settings:
 
-MongoDB, Better Auth, JWT, and Google OAuth credentials are server-side values:
-do not give them a `NEXT_PUBLIC_` prefix. Keep Stripe's secret key only in the
-backend `.env`, never in the frontend.
-In particular, use `MONGODB_URI` (not `NEXT_PUBLIC_MONGODB_URI`) in both
-server environments, and `STRIPE_SECRET_KEY` only in the backend. Only the
-Stripe publishable key and imgbb upload key should use `NEXT_PUBLIC_`.
-Use the MongoDB Atlas **database user** credentials in `MONGODB_URI` (not the
-Atlas website login), allow the development machine's IP in Atlas Network
-Access, and percent-encode any reserved characters in the database password.
-The frontend and backend must use the same working MongoDB URI. If either
-server reports `bad auth: Authentication failed`, reset the Atlas Database
-Access user's password, update `MONGODB_URI` in both private environment files,
-and restart both servers. Stripe Checkout additionally needs `STRIPE_SECRET_KEY`
-in the backend environment. Use a Stripe test-mode secret key while testing;
-never paste the key into chat or commit it. The current payment confirmation
-retrieves the Checkout session from Stripe after redirect, so a webhook signing
-secret is not required for this flow.
-Both environment examples use the `assignment-10` database by default.
-If a live key or database password is pasted into chat or another shared
-location, rotate it in its provider dashboard and update the private `.env`
-files; do not commit those files.
+- `NEXT_PUBLIC_API_BASE_URL=http://localhost:5000`
+- `BETTER_AUTH_URL=http://localhost:3000`
+- `BETTER_AUTH_SECRET` (private, at least 32 characters)
+- `JWT_SECRET` (private, at least 32 characters; must match the backend)
+- `MONGODB_URI` and `DB_NAME` (must match the backend)
+- `NEXT_PUBLIC_APP_URL` (optional; defaults to `http://localhost:3000`)
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Google sign-in
+- `NEXT_PUBLIC_IMGBB_API_KEY` for browser image uploads (optional if image
+  uploads are not used)
+
+Backend settings:
+
+- `MONGODB_URI` and `DB_NAME` (same database as the frontend)
+- `JWT_SECRET` (same secret as the frontend)
+- `CLIENT_ORIGIN=http://localhost:3000`
+- `STRIPE_SECRET_KEY` for Stripe Checkout
+- Optional `PORT`, `JWT_COOKIE_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and
+  `ADMIN_NAME`
+
+Generate private secrets with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+```
+
+For Google OAuth, register
+`http://localhost:3000/api/auth/callback/google` as a development redirect URI.
+Use a Stripe test-mode secret key while testing. This app verifies the Checkout
+session after redirect, so the current flow does not require a webhook secret
+or Stripe Price IDs.
+
+Only browser-safe values should start with `NEXT_PUBLIC_`. Keep MongoDB
+credentials, Better Auth/JWT secrets, Google client secrets, and Stripe secret
+keys private. For Atlas, use a **Database Access** user, allow the development
+IP in Network Access, and URL-encode special characters in the password. Both
+services default to the `recipehub` database when `DB_NAME` is omitted.
 
 ## Routes
 
@@ -131,17 +161,16 @@ files; do not commit those files.
 
 ## Run Locally
 
-Start the Express API from `C:\projects\Assignment\assignment-10-backend`
-after creating its `.env` from `.env.example`:
+Start the Express API in its own terminal after creating the backend `.env`:
 
-```bash
+```powershell
+cd C:\projects\Assignment\assignment-10-backend
 npm install
 npm run dev
 ```
 
-Then start the frontend from this directory after creating `.env.local` from
-`.env.example` and setting `BETTER_AUTH_SECRET`, `JWT_SECRET`, and
-`MONGODB_URI` (the MongoDB URI and JWT secret must match the backend values):
+Then create the frontend `.env.local` with the frontend settings above and start
+the app in a second terminal:
 
 ```bash
 npm install
@@ -150,6 +179,11 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+Do not pass `index.js` to the frontend's `npm run dev` or `next dev` command.
+That makes Next.js treat `index.js` as the frontend project directory and
+produces an "Invalid project directory" error. The backend already has its
+own `npm run dev` command and does not require `nodemon`.
+
 ## Verification
 
 ```bash
@@ -157,11 +191,14 @@ npm run lint
 npm run build
 ```
 
-Run lint and build from the frontend directory. The production build requires a
-`BETTER_AUTH_SECRET` to be set in the environment.
+Run lint and build from the frontend directory. The production build requires
+`BETTER_AUTH_SECRET` and valid frontend environment settings.
 
-## Deploy on Vercel
+## Deployment notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The frontend can be deployed to a Next.js host such as Vercel. Deploy the
+Express API separately and set `NEXT_PUBLIC_API_BASE_URL` to its public HTTPS
+origin. Set `CLIENT_ORIGIN` on the API to the deployed frontend origin, and
+configure the same `MONGODB_URI` and `JWT_SECRET` in both services. Add the
+production frontend URL to Google OAuth's allowed redirect URIs. Keep server
+secrets in the host's environment settings, not in source control.

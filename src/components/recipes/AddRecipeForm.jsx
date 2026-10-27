@@ -16,7 +16,6 @@ export function AddRecipeForm({ recipeId }) {
   const [quotaError, setQuotaError] = useState("");
 
   useEffect(() => {
-    if (recipeId) return;
     let active = true;
     apiFetch("/api/dashboard/overview")
       .then((overview) => {
@@ -84,7 +83,7 @@ export function AddRecipeForm({ recipeId }) {
         recipeImage = result.data.url;
       }
 
-      await apiFetch(recipeId ? `/api/recipes/${recipeId}` : "/api/recipes", {
+      const result = await apiFetch(recipeId ? `/api/recipes/${recipeId}` : "/api/recipes", {
         method: recipeId ? "PATCH" : "POST",
         body: JSON.stringify({
           recipeName: formData.get("recipeName"),
@@ -103,8 +102,11 @@ export function AddRecipeForm({ recipeId }) {
           current ? { ...current, recipeCount: current.recipeCount + 1 } : current,
         );
       }
-      setMessage(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
-      toast.success(recipeId ? "Recipe updated successfully." : "Recipe published successfully.");
+      const successMessage = recipeId
+        ? "Recipe updated and sent for admin approval."
+        : result.message || "Recipe submitted for admin approval. It will appear after approval.";
+      setMessage(successMessage);
+      toast.success(successMessage);
     } catch (error) {
       setMessage(error.message);
       toast.error(error.message);
@@ -120,7 +122,7 @@ export function AddRecipeForm({ recipeId }) {
     return <Card><Card.Content><p role="alert">{message || "This recipe could not be loaded."}</p></Card.Content></Card>;
   }
   if (!recipeId && !quota && !quotaError) {
-    return <Card><Card.Content className="flex items-center gap-3"><Spinner /> Checking your publishing limit...</Card.Content></Card>;
+    return <Card>    <Card.Content className="flex items-center gap-3"><Spinner /> Checking your submission limit...</Card.Content></Card>;
   }
   if (!recipeId && quotaError) {
     return <Card><Card.Content><p role="alert">{quotaError}</p></Card.Content></Card>;
@@ -133,7 +135,7 @@ export function AddRecipeForm({ recipeId }) {
           <div>
             <h2 className="m-0 text-2xl font-bold">Free recipe limit reached</h2>
             <p className="mt-2 max-w-lg text-stone-600 dark:text-stone-300">
-              You have published all 3 recipes available on a free account. Upgrade to Premium to publish unlimited recipes.
+              You have used all 3 free recipe submissions, including recipes awaiting review. Upgrade to Premium for unlimited submissions.
             </p>
           </div>
           <Link className="button button--primary button--lg" href="/premium">Upgrade to Premium</Link>
@@ -147,7 +149,7 @@ export function AddRecipeForm({ recipeId }) {
       <Card.Content>
     {!recipeId && quota && !quota.isPremium ? (
       <p className="mb-4 text-sm font-semibold text-stone-600 dark:text-stone-300">
-        {quota.recipeCount} of 3 free recipes published
+        {quota.recipeCount} of 3 free recipes submitted or approved
       </p>
     ) : null}
     <form className="grid gap-4 [&_label]:grid [&_label]:gap-2 [&_label]:font-bold [&_label]:text-stone-800 dark:[&_label]:text-stone-100 [&_input]:min-h-[46px] [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-stone-200 [&_input]:bg-stone-100 [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-stone-900 [&_input]:placeholder:text-stone-400 [&_input]:focus:border-emerald-600 [&_input]:focus:outline-none [&_input]:focus:ring-2 [&_input]:focus:ring-emerald-600/20 [&_textarea]:min-h-[46px] [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-stone-200 [&_textarea]:bg-stone-100 [&_textarea]:px-3 [&_textarea]:py-3 [&_input]:dark:border-neutral-700 [&_input]:dark:bg-neutral-800 [&_input]:dark:text-stone-100 [&_textarea]:dark:border-neutral-700 [&_textarea]:dark:bg-neutral-800 [&_textarea]:dark:text-stone-100 grid-cols-2 max-[660px]:grid-cols-1" onSubmit={handleSubmit}>
@@ -202,11 +204,13 @@ export function AddRecipeForm({ recipeId }) {
         <TextArea name="instructions" placeholder="Detailed cooking steps" defaultValue={recipe?.instructions || ""} rows={6} required />
       </label>
       <Button variant="primary" type="submit" isDisabled={pending}>
-        {pending ? (recipeId ? "Saving..." : "Publishing...") : (recipeId ? "Save Changes" : "Publish Recipe")}
+        {pending ? (recipeId ? "Saving..." : "Submitting...") : (recipeId ? "Save Changes" : "Submit for Approval")}
       </Button>
-      <Link className="button button--secondary" href="/premium">
-        Become Premium
-      </Link>
+      {quota && !quota.isPremium ? (
+        <Link className="button button--secondary" href="/premium">
+          Become Premium
+        </Link>
+      ) : null}
       {message ? <p className="mt-3.5 font-bold text-emerald-800 dark:text-emerald-300 col-span-full max-[660px]:col-span-1">{message}</p> : null}
     </form>
       </Card.Content>
